@@ -104,12 +104,25 @@
       { date: '2026-05-01', name: 'วันแรงงาน' },
     ];
 
-    // โทนสี Pastel ที่ปรับให้ชัดเจนขึ้น
-    const COLORS = { Annual: '#7EB1E0', Sick: '#F58D85', Personal: '#F8C48B', Other: '#C5B1D4', Holiday: '#86D1B3' };
+    // โทนสี Pastel ที่ปรับให้เข้มและชัดเจนขึ้นเพื่อการอ่านง่าย
+    const COLORS = { 
+        Annual: '#7EB1E0', 
+        Sick: '#F58D85', 
+        Personal: '#F8C48B', 
+        Other: '#C5B1D4', 
+        Holiday: '#86D1B3' 
+    };
+    const TEXT_COLORS = { 
+        Annual: '#2C5282', 
+        Sick: '#9B2C2C', 
+        Personal: '#9C4221', 
+        Other: '#503D56', 
+        Holiday: '#22543D' 
+    };
     const STATUS_COLORS = { 
       PENDING: 'bg-[#FFDAC1] text-[#9C4221] border-[#E8C59A]', 
-      APPROVED: 'bg-[#A8E6CF] text-[#22543D] border-[#9AE6B4]', 
-      REJECTED: 'bg-[#FFB7B2] text-[#9B2C2C] border-[#E0B9BC]' 
+      APPROVED: 'bg-[#D3E4CD] text-[#3A4D39] border-[#B5CDB0]', 
+      REJECTED: 'bg-[#F2D7D9] text-[#6B3F43] border-[#E0B9BC]' 
     };
 
     // --- COMPONENTS ---
@@ -184,23 +197,23 @@
       const upcomingHolidays = mockHolidays.filter(h => h.date >= '2026-03-01').slice(0, 4);
 
       return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-in fade-in duration-500">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <StatCard 
               title="กำลังลาวันนี้" value={stats.onLeaveToday} subtitle="คลิกเพื่อดูรายละเอียด"
-              icon={<i className="fa-solid fa-users text-xl"></i>} bgColor="bg-[#86D1B3]/20" textColor="text-[#22543D]" onClick={() => onNavigate('onLeave')}
+              icon={<i className="fa-solid fa-users text-xl"></i>} bgColor="bg-[#A8E6CF]" textColor="text-[#22543D]" onClick={() => onNavigate('onLeave')}
             />
             <StatCard 
               title="รออนุมัติ" value={stats.pending} subtitle="รายการคำขอใหม่"
-              icon={<i className="fa-solid fa-clock text-xl"></i>} bgColor="bg-[#F8C48B]/20" textColor="text-[#9C4221]"
+              icon={<i className="fa-solid fa-clock text-xl"></i>} bgColor="bg-[#FCE2C2]" textColor="text-[#7A5A35]"
             />
             <StatCard 
               title="วันลาเฉลี่ย/คน" value={`${stats.avgDays} วัน`} subtitle="ตั้งแต่ต้นปี"
-              icon={<i className="fa-solid fa-chart-simple text-xl"></i>} bgColor="bg-[#7EB1E0]/20" textColor="text-[#2C5282]"
+              icon={<i className="fa-solid fa-chart-simple text-xl"></i>} bgColor="bg-[#D1E8E2]" textColor="text-[#365A53]"
             />
             <StatCard 
               title="ลาบ่อยสุด" value={stats.mostFrequent} subtitle="ประเภทลาหลัก"
-              icon={<i className="fa-solid fa-file-lines text-xl"></i>} bgColor="bg-[#F58D85]/20" textColor="text-[#9B2C2C]"
+              icon={<i className="fa-solid fa-file-lines text-xl"></i>} bgColor="bg-[#E1D1E7]" textColor="text-[#503D56]"
             />
           </div>
 
@@ -229,34 +242,39 @@
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EBE6DD" />
                       <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fontSize: 12, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                      <RechartsTooltip cursor={{fill: '#F5F2EA'}} contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '16px' }} />
-                      <Bar dataKey="days" fill="#4A4238" radius={[8, 8, 8, 8]} barSize={36} />
+                      <RechartsTooltip cursor={{fill: '#F5F2EA'}} contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '16px', fontWeight: '600' }} />
+                      <Bar dataKey="days" fill="#8C8476" radius={[8, 8, 8, 8]} barSize={36} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div id="this-month-leave-table" className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+              <div id="this-month-leave-table" className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD] scroll-mt-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-bold text-[#4A4238]">พนักงานที่ลาในเดือนนี้</h3>
+                  <h3 className="text-lg font-bold text-[#4A4238]">สรุปพนักงานลาประจำเดือน</h3>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs uppercase">
+                    <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs uppercase tracking-wider">
                       <tr>
-                        <th className="py-3 px-4 rounded-tl-xl">พนักงาน</th>
-                        <th className="py-3 px-4">วันที่ลา</th>
-                        <th className="py-3 px-4">ประเภท</th>
-                        <th className="py-3 px-4 rounded-tr-xl">จำนวน</th>
+                        <th className="py-4 px-5 rounded-tl-2xl font-bold">พนักงาน</th>
+                        <th className="py-4 px-5 font-bold">วันที่ลา</th>
+                        <th className="py-4 px-5 font-bold">ประเภทการลา</th>
+                        <th className="py-4 px-5 rounded-tr-2xl font-bold">จำนวนวัน</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#EBE6DD]">
                       {thisMonthLeaves.map(leave => (
-                        <tr key={leave.id} className="hover:bg-[#FDFBF7]">
-                          <td className="py-4 px-4 font-bold text-[#4A4238]">{leave.name}</td>
-                          <td className="py-4 px-4 text-xs font-semibold text-[#8C8476]">{leave.startDate}</td>
-                          <td className="py-4 px-4"><span className="text-xs font-bold" style={{color: COLORS[leave.type]}}>{leave.type}</span></td>
-                          <td className="py-4 px-4 text-sm font-bold">{leave.days} วัน</td>
+                        <tr key={leave.id} className="hover:bg-[#FDFBF7] transition-colors">
+                          <td className="py-5 px-5 font-bold text-[#4A4238] text-base">{leave.name}</td>
+                          <td className="py-5 px-5 text-sm font-semibold text-[#8C8476]">{leave.startDate}</td>
+                          <td className="py-5 px-5">
+                            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold shadow-sm" style={{backgroundColor: `${COLORS[leave.type]}44`, color: TEXT_COLORS[leave.type] || '#4A4238', border: `1px solid ${COLORS[leave.type]}`}}>
+                              <span className="w-2 h-2 rounded-full mr-2" style={{backgroundColor: COLORS[leave.type]}}></span>
+                              {leave.type}
+                            </span>
+                          </td>
+                          <td className="py-5 px-5 text-base font-black text-[#4A4238]">{leave.days} <span className="text-xs font-bold text-[#8C8476]">วัน</span></td>
                         </tr>
                       ))}
                     </tbody>
@@ -268,13 +286,27 @@
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
                 <h3 className="text-lg font-bold text-[#4A4238] mb-6">สัดส่วนประเภทการลา</h3>
-                <div className="h-56">
+                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={65} outerRadius={85} paddingAngle={6} stroke="none" dataKey="value">
+                      <Pie 
+                        data={pieData} 
+                        cx="50%" 
+                        cy="45%" 
+                        innerRadius={60} 
+                        outerRadius={80} 
+                        paddingAngle={6} 
+                        stroke="none" 
+                        dataKey="value"
+                      >
                         {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
                       </Pie>
-                      <RechartsTooltip />
+                      <RechartsTooltip contentStyle={{ borderRadius: '16px', fontWeight: 'bold' }} />
+                      <Legend 
+                        verticalAlign="bottom" 
+                        iconType="circle" 
+                        wrapperStyle={{ paddingTop: '20px', fontSize: '13px', fontWeight: 'bold' }} 
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -284,13 +316,13 @@
                 <h3 className="text-lg font-bold text-[#4A4238] mb-6">วันหยุดถัดไป</h3>
                 <div className="space-y-4">
                   {upcomingHolidays.map((holiday, idx) => (
-                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-3 rounded-2xl border border-[#EBE6DD]">
-                      <div className="w-12 h-12 bg-[#86D1B3]/20 text-[#22543D] rounded-xl flex flex-col items-center justify-center mr-4">
-                        <span className="text-[10px] font-bold">{new Date(holiday.date).getDate()}</span>
+                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-4 rounded-2xl border border-[#EBE6DD] hover:shadow-sm transition-all">
+                      <div className="w-14 h-14 bg-[#D3E4CD] text-[#22543D] rounded-xl flex flex-col items-center justify-center mr-4 shadow-sm border border-[#B5CDB0]">
+                        <span className="text-xl font-black leading-none">{new Date(holiday.date).getDate()}</span>
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-bold text-[#4A4238]">{holiday.name}</p>
-                        <p className="text-xs font-semibold text-[#8C8476]">{holiday.date}</p>
+                        <p className="text-xs font-bold text-[#8C8476] opacity-70">{holiday.date}</p>
                       </div>
                     </div>
                   ))}
@@ -324,37 +356,44 @@
       };
 
       return (
-        <div className="bg-[#FDFBF7] rounded-[2rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden">
-          <div className="px-6 py-5 border-b border-[#EBE6DD] flex justify-between items-center bg-[#FDFBF7]">
-            <div className="flex items-center space-x-4">
-              <button onClick={prevMonth} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F5F2EA]"><i className="fa-solid fa-chevron-left"></i></button>
-              <h2 className="text-2xl font-black text-[#4A4238] w-48 text-center">{monthNames[month]} {year}</h2>
-              <button onClick={nextMonth} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#F5F2EA]"><i className="fa-solid fa-chevron-right"></i></button>
+        <div className="bg-[#FDFBF7] rounded-[2.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="px-8 py-6 border-b border-[#EBE6DD] flex flex-col md:flex-row justify-between items-center bg-white gap-4">
+            <div className="flex items-center space-x-6">
+              <button onClick={prevMonth} className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F2EA] hover:bg-[#EBE6DD] transition-all text-[#4A4238] shadow-sm focus:outline-none">
+                <i className="fa-solid fa-chevron-left"></i>
+              </button>
+              <h2 className="text-2xl font-black text-[#4A4238] min-w-[200px] text-center tracking-tight">{monthNames[month]} {year}</h2>
+              <button onClick={nextMonth} className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F2EA] hover:bg-[#EBE6DD] transition-all text-[#4A4238] shadow-sm focus:outline-none">
+                <i className="fa-solid fa-chevron-right"></i>
+              </button>
             </div>
-            <div className="flex space-x-4 text-[10px] font-bold uppercase tracking-wider text-[#8C8476]">
-              <span className="flex items-center"><span className="w-2 h-2 bg-[#86D1B3] rounded-full mr-2"></span> Holiday</span>
-              <span className="flex items-center"><span className="w-2 h-2 bg-[#F58D85] rounded-full mr-2"></span> Sick</span>
-              <span className="flex items-center"><span className="w-2 h-2 bg-[#7EB1E0] rounded-full mr-2"></span> Annual</span>
-              <span className="flex items-center"><span className="w-2 h-2 bg-[#F8C48B] rounded-full mr-2"></span> Personal</span>
+            <div className="flex flex-wrap justify-center gap-4 text-[11px] font-bold uppercase tracking-wider">
+              <span className="flex items-center px-3 py-1.5 bg-[#D3E4CD]/40 rounded-full border border-[#B5CDB0]"><span className="w-2.5 h-2.5 bg-[#86D1B3] rounded-full mr-2 shadow-sm"></span> Holiday</span>
+              <span className="flex items-center px-3 py-1.5 bg-[#F58D85]/20 rounded-full border border-[#F58D85]/40"><span className="w-2.5 h-2.5 bg-[#F58D85] rounded-full mr-2 shadow-sm"></span> Sick</span>
+              <span className="flex items-center px-3 py-1.5 bg-[#7EB1E0]/20 rounded-full border border-[#7EB1E0]/40"><span className="w-2.5 h-2.5 bg-[#7EB1E0] rounded-full mr-2 shadow-sm"></span> Annual</span>
+              <span className="flex items-center px-3 py-1.5 bg-[#F8C48B]/20 rounded-full border border-[#F8C48B]/40"><span className="w-2.5 h-2.5 bg-[#F8C48B] rounded-full mr-2 shadow-sm"></span> Personal</span>
             </div>
           </div>
 
           <div className="p-6 overflow-auto flex-1 bg-[#FDFBF7]">
-            <div className="grid grid-cols-7 gap-4 min-w-[800px]">
-              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => <div key={day} className="text-center font-black text-[#8C8476] pb-2 text-[10px]">{day}</div>)}
-              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-32 bg-[#F5F2EA]/40 rounded-3xl"></div>)}
+            <div className="grid grid-cols-7 gap-4 min-w-[900px]">
+              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => <div key={day} className="text-center font-black text-[#8C8476] pb-3 text-xs tracking-widest">{day}</div>)}
+              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-36 bg-[#F5F2EA]/30 rounded-[2rem] border border-dashed border-[#EBE6DD]"></div>)}
               {Array.from({length: daysInMonth}, (_, i) => i + 1).map(day => {
                 const { hols, leaves } = getEventsForDay(day);
+                const isToday = day === 11 && month === 2 && year === 2026;
                 return (
-                  <div key={day} className="h-32 p-3 rounded-3xl border border-[#EBE6DD] bg-white flex flex-col">
-                    <div className="text-right text-sm font-black text-[#4A4238] mb-1">{day}</div>
-                    <div className="flex-1 overflow-y-auto space-y-1 no-scrollbar">
+                  <div key={day} className={`h-36 p-4 rounded-[2rem] border transition-all hover:shadow-md hover:-translate-y-0.5 flex flex-col ${isToday ? 'border-[#8C8476] bg-[#F5F2EA] ring-2 ring-[#8C8476]/10' : 'border-[#EBE6DD] bg-white'}`}>
+                    <div className="flex justify-between items-start mb-2">
+                        <span className={`text-sm font-black w-7 h-7 flex items-center justify-center rounded-full ${isToday ? 'bg-[#4A4238] text-white' : 'text-[#4A4238]'}`}>{day}</span>
+                    </div>
+                    <div className="flex-1 overflow-y-auto space-y-1.5 no-scrollbar">
                       {hols.map((h, i) => (
-                        <div key={`h-${i}`} className="text-[9px] bg-[#86D1B3] text-white px-2 py-0.5 rounded-full font-bold truncate leading-tight">🎉 {h.name}</div>
+                        <div key={`h-${i}`} className="text-[10px] bg-[#86D1B3] text-white px-2.5 py-1 rounded-full font-bold truncate shadow-sm leading-tight border border-[#71B59B]">🎉 {h.name}</div>
                       ))}
                       {leaves.map((l, i) => (
-                        <div key={`l-${i}`} className="text-[9px] px-2 py-0.5 rounded-full font-bold truncate leading-tight flex items-center" style={{backgroundColor: `${COLORS[l.type]}44`, color: COLORS[l.type]}}>
-                          <span className="w-1 h-1 rounded-full mr-1" style={{backgroundColor: COLORS[l.type]}}></span> {l.name}
+                        <div key={`l-${i}`} className="text-[10px] px-2.5 py-1 rounded-full font-bold truncate leading-tight flex items-center shadow-sm border" style={{backgroundColor: `${COLORS[l.type]}`, color: TEXT_COLORS[l.type], borderColor: `${COLORS[l.type]}dd`}}>
+                          <span className="w-1.5 h-1.5 rounded-full mr-1.5 bg-current opacity-70"></span> {l.name}
                         </div>
                       ))}
                     </div>
@@ -373,29 +412,37 @@
       const [selectedEmployee, setSelectedEmployee] = useState(null);
 
       return (
-        <div className="bg-white rounded-[2rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden">
-          <div className="p-6 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
-            <h2 className="text-xl font-black text-[#4A4238]">ระบบพนักงาน</h2>
-            <input type="text" placeholder="ค้นหาพนักงาน..." className="px-5 py-2 rounded-full border border-[#EBE6DD] text-sm focus:outline-none focus:ring-2 focus:ring-[#D3C8B4]" onChange={e => setSearchTerm(e.target.value)} />
+        <div className="bg-white rounded-[2.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
+          <div className="p-8 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
+            <h2 className="text-2xl font-black text-[#4A4238]">ฐานข้อมูลพนักงาน</h2>
+            <div className="relative">
+                <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#8C8476]"></i>
+                <input type="text" placeholder="ค้นหาด้วยชื่อ..." className="pl-11 pr-6 py-2.5 rounded-full border border-[#EBE6DD] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#D3C8B4] shadow-sm w-72" onChange={e => setSearchTerm(e.target.value)} />
+            </div>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto flex-1">
             <table className="w-full text-left">
-              <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs font-black">
+              <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs font-black uppercase tracking-widest">
                 <tr>
-                  <th className="py-4 px-6">ชื่อ-นามสกุล</th>
-                  <th className="py-4 px-6 text-center">วันลาพักร้อนคงเหลือ</th>
-                  <th className="py-4 px-6 text-right">ดำเนินการ</th>
+                  <th className="py-5 px-8">รายชื่อพนักงาน</th>
+                  <th className="py-5 px-8 text-center">สิทธิ์ลาพักร้อนคงเหลือ</th>
+                  <th className="py-5 px-8 text-right">ข้อมูลเชิงลึก</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#EBE6DD]">
                 {filteredEmployees.map(emp => {
                   const annual = mockBalances.find(b => b.userId === emp.id && b.type === 'Annual');
                   return (
-                    <tr key={emp.id} className="hover:bg-[#FDFBF7]">
-                      <td className="py-4 px-6 font-bold text-[#4A4238]">{emp.name}</td>
-                      <td className="py-4 px-6 text-center font-black">{annual ? annual.remaining : 0} วัน</td>
-                      <td className="py-4 px-6 text-right">
-                        <button onClick={() => setSelectedEmployee(emp)} className="px-4 py-2 bg-[#F5F2EA] rounded-xl text-xs font-bold hover:bg-[#EBE6DD] transition-colors">ดูข้อมูล</button>
+                    <tr key={emp.id} className="hover:bg-[#FDFBF7] transition-colors">
+                      <td className="py-5 px-8">
+                        <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-[#EBE6DD] text-[#4A4238] flex items-center justify-center font-black mr-4 shadow-sm border border-white">{emp.name.charAt(0)}</div>
+                            <span className="font-bold text-[#4A4238] text-lg">{emp.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-5 px-8 text-center font-black text-xl text-[#4A4238]">{annual ? annual.remaining : 0} <span className="text-xs font-bold text-[#8C8476]">วัน</span></td>
+                      <td className="py-5 px-8 text-right">
+                        <button onClick={() => setSelectedEmployee(emp)} className="px-6 py-2.5 bg-[#F5F2EA] text-[#4A4238] rounded-2xl text-xs font-black hover:bg-[#EBE6DD] transition-all shadow-sm">ดูรายละเอียดการลา</button>
                       </td>
                     </tr>
                   )
@@ -405,21 +452,23 @@
           </div>
 
           {selectedEmployee && (
-            <div className="fixed inset-0 bg-[#4A4238]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedEmployee(null)}>
-              <div className="bg-white rounded-[2.5rem] p-8 w-full max-w-2xl shadow-2xl border border-[#EBE6DD]" onClick={e => e.stopPropagation()}>
-                <h2 className="text-2xl font-black mb-6">{selectedEmployee.name}</h2>
+            <div className="fixed inset-0 bg-[#4A4238]/40 backdrop-blur-md z-50 flex items-center justify-center p-4" onClick={() => setSelectedEmployee(null)}>
+              <div className="bg-white rounded-[3rem] p-10 w-full max-w-2xl shadow-2xl border border-[#EBE6DD] animate-in zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-3xl font-black text-[#4A4238]">{selectedEmployee.name}</h2>
+                    <button onClick={() => setSelectedEmployee(null)} className="w-10 h-10 bg-[#F5F2EA] rounded-full flex items-center justify-center text-[#4A4238]"><i className="fa-solid fa-xmark"></i></button>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {mockBalances.filter(b => b.userId === selectedEmployee.id).map((b, i) => (
-                    <div key={i} className="p-5 rounded-3xl border border-[#EBE6DD] bg-[#FDFBF7]">
-                      <p className="text-[10px] font-bold text-[#8C8476] mb-1 uppercase">{b.type}</p>
-                      <p className="text-2xl font-black text-[#4A4238]">{b.remaining} <span className="text-xs font-normal">วัน</span></p>
-                      <div className="w-full bg-[#EBE6DD] h-1.5 rounded-full mt-3 overflow-hidden">
-                        <div className="h-full rounded-full" style={{backgroundColor: COLORS[b.type], width: `${(b.used/b.entitled)*100}%`}}></div>
+                    <div key={i} className="p-6 rounded-[2rem] border border-[#EBE6DD] bg-[#FDFBF7] shadow-sm">
+                      <p className="text-[10px] font-black text-[#8C8476] mb-2 uppercase tracking-widest">{b.type}</p>
+                      <p className="text-3xl font-black text-[#4A4238]">{b.remaining} <span className="text-xs font-bold text-[#8C8476]">วัน</span></p>
+                      <div className="w-full bg-[#EBE6DD] h-2 rounded-full mt-4 overflow-hidden shadow-inner">
+                        <div className="h-full rounded-full transition-all duration-1000" style={{backgroundColor: COLORS[b.type], width: `${(b.used/b.entitled)*100}%`}}></div>
                       </div>
                     </div>
                   ))}
                 </div>
-                <button onClick={() => setSelectedEmployee(null)} className="mt-8 w-full py-3 bg-[#4A4238] text-white rounded-2xl font-bold">ปิดหน้าต่าง</button>
               </div>
             </div>
           )}
@@ -441,25 +490,25 @@
       });
 
       return (
-        <div className="bg-white rounded-[2rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden">
-          <div className="p-6 border-b border-[#EBE6DD] bg-[#FDFBF7]"><h2 className="text-lg font-black text-[#4A4238]">รายงานประจำปี 2026</h2></div>
-          <div className="overflow-x-auto p-6 bg-[#F5F2EA]">
-            <table className="w-full text-left border-collapse bg-white rounded-2xl overflow-hidden shadow-sm">
-              <thead className="bg-[#FDFBF7] text-[#8C8476] text-[10px] font-bold uppercase tracking-widest border-b border-[#EBE6DD]">
+        <div className="bg-white rounded-[2.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
+          <div className="p-8 border-b border-[#EBE6DD] bg-[#FDFBF7]"><h2 className="text-2xl font-black text-[#4A4238]">รายงานสรุปการลาประจำปี 2026</h2></div>
+          <div className="overflow-x-auto p-8 bg-[#F5F2EA]">
+            <table className="w-full text-left border-collapse bg-white rounded-[2rem] overflow-hidden shadow-sm border border-[#EBE6DD]">
+              <thead className="bg-[#FDFBF7] text-[#8C8476] text-[10px] font-black uppercase tracking-widest border-b border-[#EBE6DD]">
                 <tr>
-                  <th className="py-4 px-5 border-r border-[#EBE6DD] sticky left-0 bg-[#FDFBF7]">พนักงาน</th>
-                  {months.map(m => <th key={m} className="py-4 px-2 text-center border-r border-[#EBE6DD]">{m}</th>)}
-                  <th className="py-4 px-5 text-center bg-[#F5F2EA]">รวม</th>
+                  <th className="py-5 px-6 border-r border-[#EBE6DD] sticky left-0 bg-[#FDFBF7] z-10">พนักงาน</th>
+                  {months.map(m => <th key={m} className="py-5 px-2 text-center border-r border-[#EBE6DD]">{m}</th>)}
+                  <th className="py-5 px-6 text-center bg-[#F5F2EA] text-[#4A4238]">รวมทั้งหมด</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#EBE6DD]">
                 {summaryData.map(emp => (
                   <tr key={emp.id} className="hover:bg-[#FDFBF7] transition-colors">
-                    <td className="py-3 px-5 border-r border-[#EBE6DD] font-bold text-sm text-[#4A4238] sticky left-0 bg-white shadow-[1px_0_0_0_#EBE6DD]">{emp.name}</td>
+                    <td className="py-4 px-6 border-r border-[#EBE6DD] font-bold text-sm text-[#4A4238] sticky left-0 bg-white z-10 shadow-[1px_0_0_0_#EBE6DD]">{emp.name}</td>
                     {emp.monthlyDays.map((d, i) => (
-                      <td key={i} className={`py-3 px-2 text-center text-xs font-bold border-r border-[#EBE6DD] ${d > 0 ? 'text-[#4A4238] bg-[#F5F2EA]' : 'text-[#D3C8B4]'}`}>{d > 0 ? d : '-'}</td>
+                      <td key={i} className={`py-4 px-2 text-center text-xs font-black border-r border-[#EBE6DD] ${d > 0 ? 'text-[#4A4238] bg-[#F5F2EA]' : 'text-[#D3C8B4]'}`}>{d > 0 ? d : '-'}</td>
                     ))}
-                    <td className="py-3 px-5 text-center font-black bg-[#F5F2EA]">{emp.total}</td>
+                    <td className="py-4 px-6 text-center font-black bg-[#F5F2EA] text-lg text-[#4A4238]">{emp.total}</td>
                   </tr>
                 ))}
               </tbody>
@@ -474,19 +523,26 @@
       const stats = { pending: 3, avgDays: '1.2', mostFrequent: 'Sick', onLeaveToday: 2 };
 
       return (
-        <div className="flex h-screen bg-[#F5F2EA]">
-          <aside className="bg-[#FDFBF7] w-64 border-r border-[#EBE6DD] hidden md:flex flex-col shadow-sm">
-            <div className="h-20 flex items-center px-8 border-b border-[#EBE6DD] bg-white"><span className="text-xl font-black text-[#4A4238]">LeaveApp</span></div>
-            <nav className="flex-1 p-5 space-y-2">
+        <div className="flex h-screen bg-[#F5F2EA] font-sans">
+          <aside className="bg-[#FDFBF7] w-64 border-r border-[#EBE6DD] hidden md:flex flex-col shadow-sm z-20">
+            <div className="h-24 flex items-center px-10 border-b border-[#EBE6DD] bg-white">
+                <div className="w-10 h-10 bg-[#A8E6CF] rounded-2xl flex items-center justify-center mr-3 shadow-sm">
+                    <i className="fa-solid fa-leaf text-[#22543D]"></i>
+                </div>
+                <span className="text-2xl font-black text-[#4A4238] tracking-tight">LeaveApp</span>
+            </div>
+            <nav className="flex-1 p-6 space-y-3">
               <NavItem icon={<i className="fa-solid fa-chart-pie"></i>} label="ภาพรวม" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
-              <NavItem icon={<i className="fa-solid fa-calendar"></i>} label="ปฏิทิน" active={activeTab === 'calendar'} onClick={() => setActiveTab('calendar')} />
-              <NavItem icon={<i className="fa-solid fa-users"></i>} label="พนักงาน" active={activeTab === 'employees'} onClick={() => setActiveTab('employees')} />
-              <NavItem icon={<i className="fa-solid fa-table"></i>} label="รายงาน" active={activeTab === 'reports'} onClick={() => setActiveTab('reports')} />
+              <NavItem icon={<i className="fa-solid fa-calendar"></i>} label="ปฏิทินการลา" active={activeTab === 'calendar'} onClick={() => setActiveTab('calendar')} />
+              <NavItem icon={<i className="fa-solid fa-users"></i>} label="จัดการพนักงาน" active={activeTab === 'employees'} onClick={() => setActiveTab('employees')} />
+              <NavItem icon={<i className="fa-solid fa-table"></i>} label="รายงานสรุป" active={activeTab === 'reports'} onClick={() => setActiveTab('reports')} />
             </nav>
           </aside>
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="h-20 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center px-8"><h1 className="text-2xl font-black text-[#4A4238] tracking-tight capitalize">{activeTab}</h1></header>
-            <main className="flex-1 overflow-auto p-8 bg-[#F5F2EA]">
+          <div className="flex-1 flex flex-col overflow-hidden relative">
+            <header className="h-24 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center px-10 shadow-sm z-10">
+                <h1 className="text-3xl font-black text-[#4A4238] tracking-tight capitalize">{activeTab === 'overview' ? 'ภาพรวมระบบ' : activeTab === 'calendar' ? 'ปฏิทินการลา' : activeTab === 'employees' ? 'ระบบจัดการพนักงาน' : 'รายงานสรุปการลา'}</h1>
+            </header>
+            <main className="flex-1 overflow-auto p-10 bg-[#F5F2EA] no-scrollbar">
               {activeTab === 'overview' && <OverviewTab stats={stats} onNavigate={t => document.getElementById('this-month-leave-table')?.scrollIntoView({behavior: 'smooth'})} />}
               {activeTab === 'calendar' && <CalendarTab />}
               {activeTab === 'employees' && <EmployeesTab />}
