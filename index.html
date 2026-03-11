@@ -30,20 +30,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #F5F2EA; border-radius: 4px; } 
-    ::-webkit-scrollbar-thumb { background: #D3C8B4; border-radius: 4px; } 
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; } 
+    ::-webkit-scrollbar-thumb { background: #D3C8B4; border-radius: 10px; } 
     ::-webkit-scrollbar-thumb:hover { background: #8C8476; } 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    body { font-family: 'Prompt', sans-serif; font-size: 16px; }
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      cursor: pointer;
-      opacity: 0.6;
-    }
-    input[type="date"]::-webkit-calendar-picker-indicator:hover {
-      opacity: 1;
-    }
+    body { font-family: 'Prompt', sans-serif; font-size: 15px; }
+    input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
   </style>
 </head>
 <body class="bg-[#F5F2EA] text-[#4A4238] selection:bg-[#D3E4CD] selection:text-[#3A4D39]">
@@ -59,6 +53,7 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttbWVlcWluemZndG9pbHJhYmlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Njg2MTcsImV4cCI6MjA4ODI0NDYxN30.zrccfQOVFQof1jMj1TRbPiIYYukcnYYBqi3i1x6qir0';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // สีประจำประเภทการลา (ให้รองรับการเช็คแบบมี Case-insensitive)
     const COLORS = { Annual: '#7EB1E0', Sick: '#F58D85', Personal: '#F8C48B', Other: '#C5B1D4', Holiday: '#86D1B3' };
     const TEXT_COLORS = { Annual: '#2C5282', Sick: '#9B2C2C', Personal: '#9C4221', Other: '#503D56', Holiday: '#22543D' };
     
@@ -66,14 +61,14 @@
       return (
         <button
           onClick={onClick}
-          className={`w-full flex items-center px-5 py-4 text-lg font-bold rounded-2xl transition-all relative ${
+          className={`w-full flex items-center px-5 py-3 text-sm font-bold rounded-xl transition-all relative ${
             active ? 'bg-[#F5F2EA] text-[#4A4238] shadow-sm' : 'text-[#8C8476] hover:bg-[#F5F2EA]/50 hover:text-[#4A4238]'
           }`}
         >
-          <span className={`mr-4 w-6 h-6 flex items-center justify-center text-xl ${active ? 'text-[#8C8476]' : 'text-[#D3C8B4]'}`}>{icon}</span>
+          <span className={`mr-3 w-5 h-5 flex items-center justify-center text-base ${active ? 'text-[#8C8476]' : 'text-[#D3C8B4]'}`}>{icon}</span>
           {label}
           {badge > 0 && (
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#F58D85] text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full shadow-sm">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#F58D85] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-sm">
               {badge}
             </span>
           )}
@@ -83,14 +78,14 @@
 
     function StatCard({ title, value, subtitle, icon, bgColor, textColor, onClick }) {
       return (
-        <div onClick={onClick} className={`bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD] transition-all ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-1' : ''}`}>
+        <div onClick={onClick} className={`bg-white p-5 rounded-2xl shadow-sm border border-[#EBE6DD] transition-all ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-1' : ''}`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-bold text-[#8C8476] mb-1">{title}</p>
-              <p className="text-4xl font-black text-[#4A4238]">{value}</p>
-              {subtitle && <p className="text-base font-semibold text-[#D3C8B4] mt-1">{subtitle}</p>}
+              <p className="text-xs font-bold text-[#8C8476] mb-0.5">{title}</p>
+              <p className="text-2xl font-black text-[#4A4238]">{value}</p>
+              {subtitle && <p className="text-[10px] font-semibold text-[#D3C8B4] mt-0.5">{subtitle}</p>}
             </div>
-            <div className={`p-4 rounded-2xl flex items-center justify-center w-16 h-16 ${bgColor} ${textColor} shadow-sm text-2xl`}>{icon}</div>
+            <div className={`p-3 rounded-xl flex items-center justify-center w-12 h-12 ${bgColor} ${textColor} shadow-sm text-lg`}>{icon}</div>
           </div>
         </div>
       );
@@ -99,39 +94,39 @@
     function PendingTab({ requests }) {
       const pendingRequests = requests.filter(r => r.status === 'PENDING' || r.status === 'SUBMITTED');
       return (
-        <div className="bg-white rounded-[2.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
-          <div className="p-8 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
-            <h2 className="text-3xl font-black text-[#4A4238]">รายการที่รอการอนุมัติ</h2>
-            <span className="bg-[#FCE2C2] text-[#7A5A35] px-6 py-2 rounded-full text-base font-black border border-[#EBE6DD]">
+        <div className="bg-white rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
+          <div className="p-6 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
+            <h2 className="text-xl font-black text-[#4A4238]">รายการรออนุมัติ</h2>
+            <span className="bg-[#FCE2C2] text-[#7A5A35] px-4 py-1.5 rounded-full text-xs font-black border border-[#EBE6DD]">
               ทั้งหมด {pendingRequests.length} รายการ
             </span>
           </div>
           <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left">
-              <thead className="bg-[#F5F2EA] text-[#8C8476] text-base font-black uppercase tracking-widest">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-[#F5F2EA] text-[#8C8476] text-[10px] font-black uppercase tracking-widest">
                 <tr>
-                  <th className="py-6 px-10">พนักงาน</th>
-                  <th className="py-6 px-10">ประเภท</th>
-                  <th className="py-6 px-10">วันที่ลา</th>
-                  <th className="py-6 px-10">จำนวน</th>
-                  <th className="py-6 px-10">เหตุผล</th>
+                  <th className="py-4 px-8">พนักงาน</th>
+                  <th className="py-4 px-8">ประเภท</th>
+                  <th className="py-4 px-8">วันที่ลา</th>
+                  <th className="py-4 px-8 text-center">จำนวน</th>
+                  <th className="py-4 px-8">เหตุผล</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EBE6DD] text-lg">
+              <tbody className="divide-y divide-[#EBE6DD] text-sm">
                 {pendingRequests.length > 0 ? pendingRequests.map(req => (
                   <tr key={req.id} className="hover:bg-[#FDFBF7] transition-colors">
-                    <td className="py-7 px-10 font-bold text-[#4A4238] text-xl">{req.name}</td>
-                    <td className="py-7 px-10">
-                       <span className="inline-flex items-center px-5 py-2 rounded-full text-sm font-black shadow-sm" style={{backgroundColor: `${COLORS[req.type] || '#EBE6DD'}44`, color: TEXT_COLORS[req.type] || '#4A4238', border: `1px solid ${COLORS[req.type]}66`}}>
+                    <td className="py-5 px-8 font-bold text-[#4A4238]">{req.name}</td>
+                    <td className="py-5 px-8">
+                       <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black shadow-sm" style={{backgroundColor: `${COLORS[req.type] || '#EBE6DD'}44`, color: TEXT_COLORS[req.type] || '#4A4238', border: `1px solid ${COLORS[req.type]}44`}}>
                          {req.type}
                        </span>
                     </td>
-                    <td className="py-7 px-10 font-semibold text-[#8C8476]">{req.startDate}</td>
-                    <td className="py-7 px-10 font-black text-[#4A4238] text-xl">{req.days} <span className="text-sm font-bold text-[#8C8476]">วัน</span></td>
-                    <td className="py-7 px-10 text-[#8C8476] truncate max-w-xs">{req.reason || '-'}</td>
+                    <td className="py-5 px-8 font-semibold text-[#8C8476]">{req.startDate}</td>
+                    <td className="py-5 px-8 text-center font-black text-[#4A4238]">{req.days} <span className="text-[10px] font-bold text-[#8C8476]">วัน</span></td>
+                    <td className="py-5 px-8 text-[#8C8476] truncate max-w-[200px]">{req.reason || '-'}</td>
                   </tr>
                 )) : (
-                  <tr><td colSpan="5" className="py-32 text-center font-bold text-[#D3C8B4] text-2xl">ไม่มีรายการรออนุมัติในขณะนี้</td></tr>
+                  <tr><td colSpan="5" className="py-32 text-center font-bold text-[#D3C8B4] text-xl">ไม่มีรายการรออนุมัติในขณะนี้</td></tr>
                 )}
               </tbody>
             </table>
@@ -149,9 +144,10 @@
       const pieData = useMemo(() => {
         let ann = 0, sick = 0, per = 0, oth = 0;
         requests.filter(r => r.status === 'APPROVED').forEach(r => {
-          if(r.type === 'Annual') ann += r.days;
-          else if(r.type === 'Sick') sick += r.days;
-          else if(r.type === 'Personal') per += r.days;
+          const type = r.type.toLowerCase();
+          if(type.includes('annual')) ann += r.days;
+          else if(type.includes('sick')) sick += r.days;
+          else if(type.includes('personal') || type.includes('business')) per += r.days;
           else oth += r.days;
         });
         return [
@@ -190,134 +186,118 @@
       }, [requests, currentMonth]);
 
       return (
-        <div className="space-y-10 animate-in fade-in duration-500">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard title="รออนุมัติ" value={stats.pending} subtitle="รายการคำขอใหม่" icon={<i className="fa-solid fa-clock"></i>} bgColor="bg-[#FCE2C2]" textColor="text-[#7A5A35]" onClick={() => onNavigate('pending')} />
-            <StatCard title="การใช้สิทธิลา" value={`${stats.usageRate}%`} subtitle="จากสิทธิทั้งหมด" icon={<i className="fa-solid fa-percent"></i>} bgColor="bg-[#D3E4CD]" textColor="text-[#3A4D39]" />
-            <StatCard title="วันลาเฉลี่ย/คน" value={`${stats.avgDays} วัน`} subtitle="ตั้งแต่ต้นปี" icon={<i className="fa-solid fa-chart-simple"></i>} bgColor="bg-[#D1E8E2]" textColor="text-[#365A53]" />
-            <StatCard title="ลาบ่อยสุด" value={stats.mostFrequent || '-'} subtitle="ประเภทลาหลัก" icon={<i className="fa-solid fa-file-lines"></i>} bgColor="bg-[#E1D1E7]" textColor="text-[#503D56]" />
+        <div className="space-y-6 animate-in fade-in duration-500">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard title="รออนุมัติ" value={stats.pending} subtitle="รายการใหม่" icon={<i className="fa-solid fa-clock"></i>} bgColor="bg-[#FCE2C2]" textColor="text-[#7A5A35]" onClick={() => onNavigate('pending')} />
+            <StatCard title="การใช้สิทธิลา" value={`${stats.usageRate}%`} subtitle="ปี 2026" icon={<i className="fa-solid fa-percent"></i>} bgColor="bg-[#D3E4CD]" textColor="text-[#3A4D39]" />
+            <StatCard title="วันลาเฉลี่ย" value={`${stats.avgDays} วัน`} subtitle="ต่อพนักงาน" icon={<i className="fa-solid fa-chart-simple"></i>} bgColor="bg-[#D1E8E2]" textColor="text-[#365A53]" />
+            <StatCard title="ลาบ่อยสุด" value={stats.mostFrequent || '-'} subtitle="ประเภทหลัก" icon={<i className="fa-solid fa-file-lines"></i>} bgColor="bg-[#E1D1E7]" textColor="text-[#503D56]" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-10">
-              {/* Chart Section */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
-                  <h3 className="text-2xl font-bold text-[#4A4238]">แนวโน้มการลาแต่ละเดือน</h3>
-                  <div className="flex items-center space-x-3 bg-[#F5F2EA] rounded-full px-5 py-2.5 border border-[#EBE6DD]">
-                    <i className="fa-solid fa-user text-[#8C8476] text-base"></i>
-                    <select className="text-base font-bold bg-transparent focus:outline-none text-[#4A4238] cursor-pointer" value={chartUser} onChange={(e) => setChartUser(e.target.value)}>
-                      <option value="ALL">พนักงานทั้งหมด (รวม)</option>
-                      {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
-                    </select>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <h3 className="text-base font-bold text-[#4A4238]">สถิติการลาแต่ละเดือน</h3>
+                  <select className="text-[10px] font-bold bg-[#F5F2EA] px-3 py-1.5 rounded-full border border-[#EBE6DD] outline-none text-[#4A4238]" value={chartUser} onChange={(e) => setChartUser(e.target.value)}>
+                    <option value="ALL">พนักงานทั้งหมด (รวม)</option>
+                    {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+                  </select>
                 </div>
-                <div className="h-80">
+                <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dynamicBarData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                    <BarChart data={dynamicBarData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EBE6DD" />
-                      <XAxis dataKey="name" tick={{ fontSize: 14, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 14, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                      <RechartsTooltip cursor={{fill: '#F5F2EA'}} contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '16px', fontWeight: '700', fontSize: '15px' }} />
-                      <Bar dataKey="days" fill="#8C8476" radius={[12, 12, 12, 12]} barSize={45} />
+                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                      <RechartsTooltip cursor={{fill: '#F5F2EA'}} contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '12px', fontWeight: '700', fontSize: '12px' }} />
+                      <Bar dataKey="days" fill="#D3C8B4" radius={[4, 4, 4, 4]} barSize={28} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Today Absence Section with Date Picker */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4">
-                  <h3 className="text-2xl font-bold text-[#4A4238]">รายชื่อผู้ลา (ประจำวันที่...)</h3>
-                  <div className="flex items-center bg-[#F5F2EA] px-5 py-3 rounded-2xl border border-[#EBE6DD] shadow-sm">
-                    <i className="fa-solid fa-calendar-day text-[#8C8476] mr-3 text-lg"></i>
-                    <input 
-                      type="date" 
-                      value={selectedAbsenceDate}
-                      onChange={(e) => setSelectedAbsenceDate(e.target.value)}
-                      className="bg-transparent text-base font-black text-[#4A4238] outline-none cursor-pointer"
-                    />
-                  </div>
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+                  <h3 className="text-base font-bold text-[#4A4238]">พนักงานที่ลา (ประจำวัน)</h3>
+                  <input type="date" value={selectedAbsenceDate} onChange={(e) => setSelectedAbsenceDate(e.target.value)} className="bg-[#F5F2EA] px-2.5 py-1 rounded-lg border border-[#EBE6DD] text-xs font-black text-[#4A4238] outline-none" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {absencesOnDate.length > 0 ? absencesOnDate.map((abs, idx) => (
-                    <div key={idx} className="flex items-center p-6 rounded-2xl bg-[#FDFBF7] border border-[#EBE6DD] hover:shadow-lg transition-all">
-                      <div className="w-14 h-14 rounded-full bg-[#EBE6DD] flex items-center justify-center font-black mr-6 shadow-sm text-xl">{abs.name?.charAt(0)}</div>
+                    <div key={idx} className="flex items-center p-3 rounded-xl bg-[#FDFBF7] border border-[#EBE6DD]">
+                      <div className="w-8 h-8 rounded-full bg-[#EBE6DD] flex items-center justify-center font-black mr-3 text-sm">{abs.name?.charAt(0)}</div>
                       <div>
-                        <p className="text-lg font-bold text-[#4A4238]">{abs.name}</p>
-                        <p className="text-sm font-bold uppercase tracking-widest mt-0.5" style={{color: TEXT_COLORS[abs.type] || '#8C8476'}}>{abs.type}</p>
+                        <p className="text-xs font-bold text-[#4A4238]">{abs.name}</p>
+                        <p className="text-[9px] font-bold uppercase tracking-widest" style={{color: TEXT_COLORS[abs.type] || '#8C8476'}}>{abs.type}</p>
                       </div>
                     </div>
                   )) : (
-                    <div className="col-span-full py-16 text-center text-lg font-bold text-[#D3C8B4] border border-dashed border-[#EBE6DD] rounded-2xl">
-                      ไม่มีรายชื่อพนักงานที่ลาในวันที่เลือก
-                    </div>
+                    <div className="col-span-full py-8 text-center text-xs font-bold text-[#D3C8B4] border border-dashed border-[#EBE6DD] rounded-2xl">ไม่มีพนักงานลาในวันที่เลือก</div>
                   )}
                 </div>
               </div>
 
-              {/* Restored Monthly Summary Table */}
-              <div id="this-month-leave-table" className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <h3 className="text-2xl font-bold text-[#4A4238] mb-10">สรุปพนักงานลาประจำเดือน</h3>
+              <div id="this-month-leave-table" className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-base font-bold text-[#4A4238] mb-6">สรุปพนักงานลาประจำเดือน</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-[#F5F2EA] text-[#8C8476] text-sm uppercase tracking-widest font-black">
+                    <thead className="bg-[#F5F2EA] text-[#8C8476] text-[10px] uppercase tracking-widest font-black">
                       <tr>
-                        <th className="py-6 px-8 rounded-tl-2xl">พนักงาน</th>
-                        <th className="py-6 px-8">วันที่ลา</th>
-                        <th className="py-6 px-8">ประเภท</th>
-                        <th className="py-6 px-8 rounded-tr-2xl">จำนวน</th>
+                        <th className="py-3 px-6 rounded-tl-xl">พนักงาน</th>
+                        <th className="py-3 px-6">วันที่ลา</th>
+                        <th className="py-3 px-6">ประเภท</th>
+                        <th className="py-3 px-6 rounded-tr-xl">จำนวน</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#EBE6DD] text-lg">
+                    <tbody className="divide-y divide-[#EBE6DD] text-sm">
                       {thisMonthLeaves.length > 0 ? thisMonthLeaves.map(leave => (
                         <tr key={leave.id} className="hover:bg-[#FDFBF7] transition-colors">
-                          <td className="py-6 px-8 font-bold text-[#4A4238] text-lg">{leave.name}</td>
-                          <td className="py-6 px-8 font-semibold text-[#8C8476] text-base">{leave.startDate}</td>
-                          <td className="py-6 px-8">
-                            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-black shadow-sm" style={{backgroundColor: `${COLORS[leave.type] || '#EBE6DD'}44`, color: TEXT_COLORS[leave.type] || '#4A4238', border: `1px solid ${COLORS[leave.type] || '#D3C8B4'}88`}}>
+                          <td className="py-4 px-6 font-bold text-[#4A4238] text-xs">{leave.name}</td>
+                          <td className="py-4 px-6 font-semibold text-[#8C8476] text-[11px]">{leave.startDate}</td>
+                          <td className="py-4 px-6">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black" style={{backgroundColor: `${COLORS[leave.type] || '#EBE6DD'}33`, color: TEXT_COLORS[leave.type] || '#4A4238', border: `1px solid ${COLORS[leave.type] || '#D3C8B4'}44`}}>
                               {leave.type}
                             </span>
                           </td>
-                          <td className="py-6 px-8 font-black text-[#4A4238] text-lg">{leave.days} <span className="text-xs font-bold text-[#8C8476]">วัน</span></td>
+                          <td className="py-4 px-6 font-black text-[#4A4238] text-xs">{leave.days} <span className="text-[10px] font-bold text-[#8C8476]">วัน</span></td>
                         </tr>
-                      )) : <tr><td colSpan="4" className="py-16 text-center text-lg font-bold text-[#D3C8B4]">ไม่มีข้อมูลการลาในเดือนนี้</td></tr>}
+                      )) : <tr><td colSpan="4" className="py-12 text-center text-xs font-bold text-[#D3C8B4]">ไม่มีข้อมูลการลาในเดือนนี้</td></tr>}
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-10">
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <h3 className="text-2xl font-bold text-[#4A4238] mb-10">สัดส่วนประเภทการลา</h3>
-                <div className="h-80">
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-base font-bold text-[#4A4238] mb-6">สัดส่วนประเภทการลา</h3>
+                <div className="h-60">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pieData} cx="50%" cy="45%" innerRadius={80} outerRadius={110} paddingAngle={6} stroke="none" dataKey="value">
+                      <Pie data={pieData} cx="50%" cy="45%" innerRadius={55} outerRadius={75} paddingAngle={5} stroke="none" dataKey="value">
                         {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
                       </Pie>
-                      <RechartsTooltip contentStyle={{ borderRadius: '16px', fontWeight: 'bold', fontSize: '15px' }} />
-                      <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ paddingTop: '40px', fontSize: '15px', fontWeight: 'bold' }} />
+                      <RechartsTooltip contentStyle={{ borderRadius: '12px', fontWeight: 'bold', fontSize: '12px' }} />
+                      <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 'bold' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <h3 className="text-2xl font-bold text-[#4A4238] mb-10">วันหยุดถัดไป</h3>
-                <div className="space-y-6">
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-base font-bold text-[#4A4238] mb-4">วันหยุดถัดไป</h3>
+                <div className="space-y-3">
                   {upcomingHolidays.length > 0 ? upcomingHolidays.map((holiday, idx) => (
-                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-6 rounded-2xl border border-[#EBE6DD] shadow-sm">
-                      <div className="w-16 h-16 bg-[#D3E4CD] text-[#22543D] rounded-xl flex items-center justify-center mr-6 font-black text-2xl shadow-sm">
+                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-3 rounded-xl border border-[#EBE6DD]">
+                      <div className="w-10 h-10 bg-[#D3E4CD] text-[#22543D] rounded-lg flex items-center justify-center mr-3 font-black text-sm">
                         {new Date(holiday.date).getDate()}
                       </div>
-                      <div className="flex-1">
-                        <p className="text-lg font-bold text-[#4A4238]">{holiday.name}</p>
-                        <p className="text-sm font-bold text-[#8C8476]">{holiday.date}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-[#4A4238] truncate">{holiday.name}</p>
+                        <p className="text-[9px] font-bold text-[#8C8476]">{holiday.date}</p>
                       </div>
                     </div>
-                  )) : <p className="text-center text-lg font-bold text-[#8C8476]">ไม่มีวันหยุดเร็วๆ นี้</p>}
+                  )) : <p className="text-center text-xs font-bold text-[#8C8476]">ไม่มีข้อมูลวันหยุด</p>}
                 </div>
               </div>
             </div>
@@ -342,26 +322,26 @@
       };
 
       return (
-        <div className="bg-[#FDFBF7] rounded-[3.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in zoom-in-95 duration-500">
-          <div className="px-12 py-10 border-b border-[#EBE6DD] flex justify-between items-center bg-white">
-            <div className="flex items-center space-x-10">
-              <button onClick={() => setCurrentDate(new Date(year, month - 1, 1))} className="w-14 h-14 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all text-xl"><i className="fa-solid fa-chevron-left"></i></button>
-              <h2 className="text-4xl font-black text-[#4A4238] tracking-tight">{monthNames[month]} {year}</h2>
-              <button onClick={() => setCurrentDate(new Date(year, month + 1, 1))} className="w-14 h-14 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all text-xl"><i className="fa-solid fa-chevron-right"></i></button>
+        <div className="bg-[#FDFBF7] rounded-[2rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="px-8 py-5 border-b border-[#EBE6DD] flex justify-between items-center bg-white">
+            <div className="flex items-center space-x-6">
+              <button onClick={() => setCurrentDate(new Date(year, month - 1, 1))} className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all"><i className="fa-solid fa-chevron-left text-sm"></i></button>
+              <h2 className="text-xl font-black text-[#4A4238]">{monthNames[month]} {year}</h2>
+              <button onClick={() => setCurrentDate(new Date(year, month + 1, 1))} className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all"><i className="fa-solid fa-chevron-right text-sm"></i></button>
             </div>
           </div>
-          <div className="p-10 overflow-auto flex-1 no-scrollbar bg-[#FDFBF7]">
-            <div className="grid grid-cols-7 gap-6 min-w-[1100px]">
-              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => <div key={day} className="text-center font-black text-[#8C8476] pb-6 text-sm tracking-[0.25em]">{day}</div>)}
-              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-44 bg-[#F5F2EA]/50 rounded-[3rem] border border-dashed border-[#EBE6DD]"></div>)}
+          <div className="p-4 overflow-auto flex-1 no-scrollbar bg-[#FDFBF7]">
+            <div className="grid grid-cols-7 gap-3 min-w-[700px]">
+              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => <div key={day} className="text-center font-black text-[#8C8476] pb-2 text-[10px] tracking-widest">{day}</div>)}
+              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-32 bg-[#F5F2EA]/30 rounded-2xl border border-dashed border-[#EBE6DD]"></div>)}
               {Array.from({length: daysInMonth}, (_, i) => i + 1).map(day => {
                 const { hols, leaves } = getEventsForDay(day);
                 return (
-                  <div key={day} className="h-44 p-6 rounded-[3rem] border border-[#EBE6DD] bg-white hover:shadow-2xl transition-all group flex flex-col cursor-default">
-                    <span className="text-xl font-black text-[#4A4238] block mb-4 group-hover:scale-110 origin-left transition-transform">{day}</span>
-                    <div className="space-y-3 flex-1 overflow-y-auto no-scrollbar">
-                      {hols.map((h, i) => <div key={`h-${i}`} className="text-sm bg-[#86D1B3] text-white px-4 py-2 rounded-full font-bold truncate shadow-sm border border-[#71B59B]">🎉 {h.name}</div>)}
-                      {leaves.map((l, i) => <div key={`l-${i}`} className="text-sm px-4 py-2 rounded-full font-bold truncate border shadow-sm" style={{backgroundColor: COLORS[l.type] || '#EBE6DD', color: TEXT_COLORS[l.type] || '#4A4238', borderColor: `${COLORS[l.type] || '#EBE6DD'}cc`}}>{l.name}</div>)}
+                  <div key={day} className="h-32 p-3 rounded-2xl border border-[#EBE6DD] bg-white transition-all group flex flex-col hover:border-[#D3C8B4] hover:shadow-sm">
+                    <span className="text-sm font-black text-[#4A4238] mb-2">{day}</span>
+                    <div className="space-y-1.5 flex-1 overflow-y-auto no-scrollbar">
+                      {hols.map((h, i) => <div key={`h-${i}`} className="text-[10px] bg-[#86D1B3] text-white px-2 py-0.5 rounded-lg font-bold truncate">🎉 {h.name}</div>)}
+                      {leaves.map((l, i) => <div key={`l-${i}`} className="text-[10px] px-2.5 py-0.5 rounded-lg font-bold truncate border shadow-sm" style={{backgroundColor: `${COLORS[l.type] || '#EBE6DD'}33`, color: TEXT_COLORS[l.type] || '#4A4238', borderColor: `${COLORS[l.type] || '#EBE6DD'}44`}}>{l.name}</div>)}
                     </div>
                   </div>
                 );
@@ -378,45 +358,49 @@
       const filteredEmployees = employees.filter(emp => emp.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
       return (
-        <div className="bg-white rounded-[2.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
-          <div className="p-10 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
-            <h2 className="text-3xl font-black text-[#4A4238]">จัดการข้อมูลพนักงาน</h2>
+        <div className="bg-white rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
+          <div className="p-8 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
+            <h2 className="text-xl font-black text-[#4A4238]">จัดการพนักงาน</h2>
             <div className="relative">
-              <i className="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-[#8C8476] text-xl"></i>
-              <input type="text" placeholder="ค้นหาชื่อพนักงาน..." className="pl-14 pr-10 py-4 rounded-full border border-[#EBE6DD] text-lg font-bold focus:outline-none focus:ring-4 focus:ring-[#D3C8B4]/30 w-[450px] shadow-sm transition-all" onChange={e => setSearchTerm(e.target.value)} />
+              <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#8C8476]"></i>
+              <input type="text" placeholder="ค้นหาพนักงาน..." className="pl-11 pr-6 py-2 rounded-full border border-[#EBE6DD] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#D3C8B4]/20 w-72" onChange={e => setSearchTerm(e.target.value)} />
             </div>
           </div>
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left">
-              <thead className="bg-[#F5F2EA] text-[#8C8476] text-sm font-black uppercase tracking-widest">
+              <thead className="bg-[#F5F2EA] text-[#8C8476] text-[10px] font-black uppercase tracking-widest">
                 <tr>
-                  <th className="py-7 px-12">รายชื่อพนักงาน</th>
-                  <th className="py-7 px-12 text-center">สัดส่วนการใช้สิทธิลา (%)</th>
-                  <th className="py-7 px-12 text-center">วันลาพักร้อนคงเหลือ</th>
-                  <th className="py-7 px-12 text-right">การจัดการ</th>
+                  <th className="py-5 px-10">พนักงาน</th>
+                  <th className="py-5 px-10 text-center">สัดส่วนการใช้สิทธิ (%)</th>
+                  <th className="py-5 px-10 text-center">วันลาพักร้อนคงเหลือ</th>
+                  <th className="py-5 px-10 text-right">รายละเอียด</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EBE6DD] text-lg font-semibold">
+              <tbody className="divide-y divide-[#EBE6DD] text-sm font-semibold">
                 {filteredEmployees.map(emp => {
                   const empBalances = balances.filter(b => b.userId === emp.id);
-                  const annual = empBalances.find(b => b.type === 'Annual');
+                  // FIX: ค้นหาแบบ Case-insensitive และรองรับคำที่ประกอบกัน เช่น "Annual Leave"
+                  const annual = empBalances.find(b => {
+                    const type = (b.type || '').trim().toLowerCase();
+                    return type.includes('annual');
+                  });
                   const totalEntitled = empBalances.reduce((s, b) => s + b.entitled, 0);
                   const totalUsed = empBalances.reduce((s, b) => s + b.used, 0);
                   const usageRate = totalEntitled > 0 ? Math.round((totalUsed / totalEntitled) * 100) : 0;
 
                   return (
                     <tr key={emp.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="py-8 px-12 font-bold text-[#4A4238] text-xl">{emp.name}</td>
-                      <td className="py-8 px-12">
-                        <div className="flex items-center space-x-6 justify-center min-w-[250px]">
-                          <span className="text-base font-black text-[#8C8476] w-12 text-right">{usageRate}%</span>
-                          <div className="flex-1 bg-[#EBE6DD] h-3.5 rounded-full overflow-hidden max-w-[150px] shadow-inner">
-                            <div className="h-full rounded-full transition-all duration-700 shadow-sm" style={{width: `${usageRate}%`, backgroundColor: usageRate > 80 ? '#F58D85' : usageRate > 40 ? '#F8C48B' : '#7EB1E0'}}></div>
+                      <td className="py-5 px-10 font-bold text-[#4A4238] text-base">{emp.name}</td>
+                      <td className="py-5 px-10">
+                        <div className="flex items-center space-x-4 justify-center min-w-[160px]">
+                          <span className="text-[11px] font-black text-[#8C8476] w-10 text-right">{usageRate}%</span>
+                          <div className="flex-1 bg-[#EBE6DD] h-2 rounded-full overflow-hidden max-w-[100px]">
+                            <div className="h-full rounded-full transition-all duration-700" style={{width: `${usageRate}%`, backgroundColor: usageRate > 80 ? '#F58D85' : usageRate > 40 ? '#F8C48B' : '#7EB1E0'}}></div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-8 px-12 text-center font-black text-3xl text-[#4A4238]">{annual?.remaining || 0} <span className="text-sm text-[#8C8476] font-bold">วัน</span></td>
-                      <td className="py-8 px-12 text-right"><button onClick={() => setSelectedEmployee(emp)} className="px-10 py-4 bg-[#F5F2EA] text-[#4A4238] rounded-2xl text-base font-black hover:bg-[#EBE6DD] shadow-md transition-all">ดูรายละเอียด</button></td>
+                      <td className="py-5 px-10 text-center font-black text-2xl text-[#4A4238]">{annual ? annual.remaining : 0} <span className="text-[10px] text-[#8C8476]">วัน</span></td>
+                      <td className="py-5 px-10 text-right"><button onClick={() => setSelectedEmployee(emp)} className="px-6 py-2 bg-[#F5F2EA] text-[#4A4238] rounded-xl text-xs font-black hover:bg-[#EBE6DD] transition-all">ดูข้อมูล</button></td>
                     </tr>
                   );
                 })}
@@ -425,15 +409,15 @@
           </div>
 
           {selectedEmployee && (
-            <div className="fixed inset-0 bg-[#4A4238]/70 backdrop-blur-lg z-50 flex items-center justify-center p-8 animate-in fade-in duration-300" onClick={() => setSelectedEmployee(null)}>
-              <div className="bg-white rounded-[4.5rem] p-16 w-full max-w-4xl shadow-2xl border border-[#EBE6DD]" onClick={e => e.stopPropagation()}>
-                <div className="flex justify-between items-center mb-12"><h2 className="text-5xl font-black text-[#4A4238]">{selectedEmployee.name}</h2><button onClick={() => setSelectedEmployee(null)} className="w-16 h-16 bg-[#F5F2EA] rounded-full flex items-center justify-center text-[#4A4238] hover:rotate-90 transition-all text-2xl shadow-sm"><i className="fa-solid fa-xmark"></i></button></div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+            <div className="fixed inset-0 bg-[#4A4238]/60 backdrop-blur-md z-50 flex items-center justify-center p-6 animate-in fade-in duration-300" onClick={() => setSelectedEmployee(null)}>
+              <div className="bg-white rounded-[3rem] p-10 w-full max-w-2xl shadow-2xl border border-[#EBE6DD]" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-10"><h2 className="text-3xl font-black text-[#4A4238]">{selectedEmployee.name}</h2><button onClick={() => setSelectedEmployee(null)} className="w-10 h-10 bg-[#F5F2EA] rounded-full flex items-center justify-center text-[#4A4238] hover:rotate-90 transition-all text-xl"><i className="fa-solid fa-xmark"></i></button></div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {balances.filter(b => b.userId === selectedEmployee.id).map((b, i) => (
-                    <div key={i} className="p-10 rounded-[3rem] border border-[#EBE6DD] bg-[#FDFBF7] shadow-sm hover:shadow-xl transition-all">
-                      <p className="text-sm font-black text-[#8C8476] mb-4 uppercase tracking-[0.25em]">{b.type}</p>
-                      <p className="text-5xl font-black text-[#4A4238]">{b.remaining} <span className="text-base text-[#8C8476] font-bold">วัน</span></p>
-                      <div className="w-full bg-[#EBE6DD] h-3 rounded-full mt-8 overflow-hidden shadow-inner"><div className="h-full rounded-full transition-all duration-1000" style={{backgroundColor: COLORS[b.type] || '#8C8476', width: `${b.entitled > 0 ? (b.used/b.entitled)*100 : 0}%`}}></div></div>
+                    <div key={i} className="p-8 rounded-[2rem] border border-[#EBE6DD] bg-[#FDFBF7] shadow-sm">
+                      <p className="text-[10px] font-black text-[#8C8476] mb-2 uppercase tracking-widest">{b.type}</p>
+                      <p className="text-4xl font-black text-[#4A4238]">{b.remaining} <span className="text-sm text-[#8C8476]">วัน</span></p>
+                      <div className="w-full bg-[#EBE6DD] h-1.5 rounded-full mt-5 overflow-hidden shadow-inner"><div className="h-full rounded-full transition-all duration-1000" style={{backgroundColor: COLORS[b.type] || '#8C8476', width: `${b.entitled > 0 ? (b.used/b.entitled)*100 : 0}%`}}></div></div>
                     </div>
                   ))}
                 </div>
@@ -455,17 +439,17 @@
       }, [employees, balances]);
 
       return (
-        <div className="space-y-10 animate-in fade-in duration-500">
-          <div className="bg-white rounded-[3.5rem] shadow-sm border border-[#EBE6DD] p-12">
-            <h3 className="text-3xl font-black text-[#4A4238] mb-12">วิเคราะห์สัดส่วนการใช้สิทธิลา (Usage Breakdown)</h3>
-            <div className="h-[600px]">
+        <div className="space-y-8 animate-in fade-in duration-500">
+          <div className="bg-white rounded-[2.5rem] shadow-sm border border-[#EBE6DD] p-10">
+            <h3 className="text-lg font-black text-[#4A4238] mb-10 text-center sm:text-left">วิเคราะห์สัดส่วนการใช้สิทธิลา</h3>
+            <div className="h-[450px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={usageStats} layout="vertical" margin={{ left: 80, right: 60 }}>
+                <BarChart data={usageStats} layout="vertical" margin={{ left: 50, right: 40 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#EBE6DD" />
                   <XAxis type="number" domain={[0, 100]} hide />
-                  <YAxis dataKey="name" type="category" tick={{ fontSize: 16, fontWeight: 'bold', fill: '#4A4238' }} axisLine={false} tickLine={false} width={220} />
-                  <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '16px', fontWeight: 'bold', fontSize: '16px' }} />
-                  <Bar dataKey="usageRate" fill="#8C8476" radius={[0, 20, 20, 0]} barSize={35} label={{ position: 'right', fontSize: 14, fontWeight: 'black', fill: '#8C8476', offset: 15, formatter: (v) => `${v}%` }} />
+                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12, fontWeight: 'bold', fill: '#4A4238' }} axisLine={false} tickLine={false} width={160} />
+                  <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '14px', fontWeight: 'bold', fontSize: '13px' }} />
+                  <Bar dataKey="usageRate" fill="#8C8476" radius={[0, 10, 10, 0]} barSize={22} label={{ position: 'right', fontSize: 11, fontWeight: 'black', fill: '#8C8476', offset: 12, formatter: (v) => `${v}%` }} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -492,8 +476,8 @@
           ]);
 
           setEmployees((empData || []).map(e => ({ id: e.user_id, name: e.full_name || e.displayname, nickname: e.nickname, department: e.company, status: e.active === 'Y' ? 'Active' : 'Inactive' })));
-          setBalances((balData || []).map(b => ({ userId: b.user_id, type: b.leave_type, entitled: parseFloat(b.entitled) || 0, used: parseFloat(b.used) || 0, remaining: parseFloat(b.remaining) || 0 })));
-          setRequests((reqData || []).map(r => ({ id: r.request_id, userId: r.user_id, name: r.name, type: r.leave_type, startDate: r.start_date, endDate: r.end_date, days: parseFloat(r.leave_days) || 0, reason: r.reason, status: r.status })));
+          setBalances((balData || []).map(b => ({ userId: b.user_id, type: b.leave_type || '', entitled: parseFloat(b.entitled) || 0, used: parseFloat(b.used) || 0, remaining: parseFloat(b.remaining) || 0 })));
+          setRequests((reqData || []).map(r => ({ id: r.request_id, userId: r.user_id, name: r.name, type: r.leave_type || '', startDate: r.start_date, endDate: r.end_date, days: parseFloat(r.leave_days) || 0, reason: r.reason, status: r.status })));
           setHolidays((holData || []).map(h => ({ date: h.holiday_date || h.date, name: h.holiday_name || h.name })));
         } catch (error) { console.error("Error:", error); } 
         finally { setLoading(false); }
@@ -506,7 +490,6 @@
       }, []);
 
       const stats = useMemo(() => {
-        const today = new Date().toLocaleDateString('en-CA');
         const pending = requests.filter(r => r.status === 'PENDING' || r.status === 'SUBMITTED').length;
         const totalApprovedDays = requests.filter(r => r.status === 'APPROVED').reduce((sum, r) => sum + r.days, 0);
         const avgDays = employees.length > 0 ? (totalApprovedDays / employees.length).toFixed(1) : 0;
@@ -515,19 +498,22 @@
         const usageRate = totalEntitled > 0 ? Math.round((totalUsed / totalEntitled) * 100) : 0;
         
         const typeCount = {};
-        requests.filter(r => r.status === 'APPROVED').forEach(r => { typeCount[r.type] = (typeCount[r.type] || 0) + 1; });
+        requests.filter(r => r.status === 'APPROVED').forEach(r => { 
+          const type = r.type.toLowerCase().includes('annual') ? 'Annual' : r.type.toLowerCase().includes('sick') ? 'Sick' : 'Other';
+          typeCount[type] = (typeCount[type] || 0) + 1; 
+        });
         const mostFrequent = Object.keys(typeCount).length > 0 ? Object.keys(typeCount).reduce((a, b) => typeCount[a] > typeCount[b] ? a : b) : '-';
 
         return { pending, avgDays, mostFrequent, usageRate };
       }, [requests, employees, balances]);
 
-      if (loading) return <div className="flex h-screen items-center justify-center bg-[#F5F2EA] text-4xl font-black text-[#8C8476] animate-pulse italic tracking-tighter">กำลังดึงข้อมูล...</div>;
+      if (loading) return <div className="flex h-screen items-center justify-center bg-[#F5F2EA] text-2xl font-black text-[#8C8476] animate-pulse italic tracking-tighter">กำลังดึงข้อมูล...</div>;
 
       return (
         <div className="flex h-screen bg-[#F5F2EA] font-sans selection:bg-[#D3E4CD] selection:text-[#3A4D39]">
-          <aside className="bg-[#FDFBF7] w-[320px] border-r border-[#EBE6DD] hidden md:flex flex-col shadow-lg z-20">
-            <div className="h-32 flex items-center px-12 border-b border-[#EBE6DD] bg-white"><div className="w-14 h-14 bg-[#A8E6CF] rounded-[1.5rem] flex items-center justify-center mr-5 shadow-md text-2xl"><i className="fa-solid fa-leaf text-[#22543D]"></i></div><span className="text-4xl font-black text-[#4A4238] tracking-tighter">LeaveApp</span></div>
-            <nav className="flex-1 p-10 space-y-6">
+          <aside className="bg-[#FDFBF7] w-64 border-r border-[#EBE6DD] hidden md:flex flex-col shadow-sm z-20">
+            <div className="h-16 flex items-center px-10 border-b border-[#EBE6DD] bg-white"><div className="w-10 h-10 bg-[#A8E6CF] rounded-xl flex items-center justify-center mr-3 shadow-sm text-lg"><i className="fa-solid fa-leaf text-[#22543D]"></i></div><span className="text-2xl font-black text-[#4A4238] tracking-tight">LeaveApp</span></div>
+            <nav className="flex-1 p-6 space-y-3">
               <NavItem icon={<i className="fa-solid fa-chart-pie"></i>} label="ภาพรวม" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
               <NavItem icon={<i className="fa-solid fa-clock-rotate-left"></i>} label="รออนุมัติ" active={activeTab === 'pending'} onClick={() => setActiveTab('pending')} badge={stats.pending} />
               <NavItem icon={<i className="fa-solid fa-calendar"></i>} label="ปฏิทินการลา" active={activeTab === 'calendar'} onClick={() => setActiveTab('calendar')} />
@@ -536,16 +522,16 @@
             </nav>
           </aside>
           <div className="flex-1 flex flex-col overflow-hidden relative">
-            <header className="h-32 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center px-14 shadow-md z-10">
-              <h1 className="text-5xl font-black text-[#4A4238] tracking-tighter capitalize">
+            <header className="h-16 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center px-10 shadow-sm z-10">
+              <h1 className="text-2xl font-black text-[#4A4238] tracking-tighter capitalize">
                 {activeTab === 'overview' ? 'ภาพรวมระบบ' : 
                  activeTab === 'pending' ? 'รายการรออนุมัติ' : 
                  activeTab === 'calendar' ? 'ปฏิทินการลา' : 
                  activeTab === 'employees' ? 'จัดการข้อมูลพนักงาน' : 
-                 'รายงานวิเคราะห์ผล'}
+                 'รายงานสรุปผล'}
               </h1>
             </header>
-            <main className="flex-1 overflow-auto p-14 bg-[#F5F2EA] no-scrollbar">
+            <main className="flex-1 overflow-auto p-10 bg-[#F5F2EA] no-scrollbar">
               {activeTab === 'overview' && <OverviewTab stats={stats} employees={employees} requests={requests} holidays={holidays} onNavigate={setActiveTab} />}
               {activeTab === 'pending' && <PendingTab requests={requests} />}
               {activeTab === 'calendar' && <CalendarTab holidays={holidays} requests={requests} />}
