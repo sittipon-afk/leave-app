@@ -3,10 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leave Dashboard System</title>
+  <title>Leave Dashboard System (Pastel Theme)</title>
   
+  <!-- เพิ่มฟอนต์ Prompt จาก Google Fonts ให้ตัวหนังสือชัดเจนขึ้น -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- 1. ดึง Tailwind CSS มาใช้จัดหน้าตา -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- ตั้งค่าให้ระบบเปลี่ยนมาใช้ฟอนต์ Prompt -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
   
   <!-- 2. ดึงไอคอนจาก FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,34 +32,36 @@
   <!-- 3. ดึง React มาใช้งาน -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <!-- เพิ่ม react-is เพื่อแก้ปัญหา ForwardRef Error ที่เกิดจาก Recharts เวอร์ชันใหม่ -->
   <script crossorigin src="https://unpkg.com/react-is@18/umd/react-is.production.min.js"></script>
   
-  <!-- 4. ดึง Babel (ตัวช่วยอ่านโค้ด React) -->
+  <!-- 4. ดึง Babel -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- 5. ดึง Recharts (ตัวสร้างกราฟ) -->
+  <!-- 5. ดึง Recharts -->
   <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
-  <!-- ล็อกเวอร์ชันของ Recharts เพื่อความเสถียรในการรันแบบไฟล์เดียว -->
   <script src="https://unpkg.com/recharts@2.1.12/umd/Recharts.js"></script>
 
   <style>
-    /* ซ่อน Scrollbar แต่อยู่ให้เลื่อนได้ */
+    /* ปรับแต่ง Scrollbar สำหรับ Pastel Theme */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #F5F2EA; border-radius: 4px; } 
+    ::-webkit-scrollbar-thumb { background: #D3C8B4; border-radius: 4px; } 
+    ::-webkit-scrollbar-thumb:hover { background: #8C8476; } 
+
+    /* ซ่อน Scrollbar แต่อยู่ให้เลื่อนได้สำหรับบางจุด */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-[#F5F2EA] text-[#4A4238] font-sans selection:bg-[#D3E4CD] selection:text-[#3A4D39]">
   
-  <!-- จุดที่ React จะนำ Dashboard มาแสดง -->
   <div id="root"></div>
 
-  <!-- โค้ดระบบ Dashboard ทั้งหมด -->
   <script type="text/babel">
     const { useState, useMemo } = React;
     const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip: RechartsTooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } = window.Recharts;
 
-    // --- MOCK DATA (จำลองข้อมูลจากไฟล์ Excel) ---
+    // --- MOCK DATA ---
     const mockEmployees = [
       { id: 'U1', name: 'ไชยสิทธิ์ อึ้งใจธรรม', nickname: 'พี', department: 'AVT', status: 'Active' },
       { id: 'U2', name: 'กนกอร จรทะผา', nickname: 'มี่', department: 'BDI', status: 'Active' },
@@ -81,19 +101,25 @@
       { date: '2026-05-01', name: 'วันแรงงาน' },
     ];
 
-    const COLORS = { Annual: '#3B82F6', Sick: '#EF4444', Personal: '#10B981', Other: '#F59E0B' };
-    const STATUS_COLORS = { PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200', APPROVED: 'bg-green-100 text-green-800 border-green-200', REJECTED: 'bg-red-100 text-red-800 border-red-200' };
+    // โทนสี Pastel ที่สว่างและสดใสขึ้น (ไม่ดรอป)
+    const COLORS = { Annual: '#99C1EA', Sick: '#FFB7B2', Personal: '#FFDAC1', Other: '#E1D1E7', Holiday: '#A8E6CF' };
+    const TEXT_COLORS = { Annual: '#2C5282', Sick: '#9B2C2C', Personal: '#9C4221', Other: '#503D56', Holiday: '#22543D' };
+    const STATUS_COLORS = { 
+      PENDING: 'bg-[#FFDAC1] text-[#9C4221] border-[#FBD38D]', 
+      APPROVED: 'bg-[#A8E6CF] text-[#22543D] border-[#9AE6B4]', 
+      REJECTED: 'bg-[#FFB7B2] text-[#9B2C2C] border-[#FEB2B2]' 
+    };
 
     // --- COMPONENTS ---
     function NavItem({ icon, label, active, onClick }) {
       return (
         <button
           onClick={onClick}
-          className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all ${
-            active ? 'bg-blue-50 text-blue-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+          className={`w-full flex items-center px-5 py-3.5 text-sm font-bold rounded-2xl transition-all ${
+            active ? 'bg-[#F5F2EA] text-[#4A4238] shadow-sm' : 'text-[#8C8476] hover:bg-[#F5F2EA]/50 hover:text-[#4A4238]'
           }`}
         >
-          <span className={`mr-3 w-5 h-5 flex items-center justify-center ${active ? 'text-blue-600' : 'text-gray-400'}`}>
+          <span className={`mr-4 w-5 h-5 flex items-center justify-center ${active ? 'text-[#8C8476]' : 'text-[#D3C8B4]'}`}>
             {icon}
           </span>
           {label}
@@ -101,19 +127,21 @@
       );
     }
 
-    function StatCard({ title, value, subtitle, icon, color, bgColor, onClick }) {
+    function StatCard({ title, value, subtitle, icon, bgColor, textColor, onClick }) {
       return (
         <div 
           onClick={onClick}
-          className={`bg-white p-5 rounded-xl shadow-sm border-b-4 ${color} border-x border-t border-gray-100 transition-all ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-1' : ''}`}
+          className={`bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD] transition-all ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-1' : ''}`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-              <p className="text-3xl font-bold text-gray-800">{value}</p>
-              {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
+              <p className="text-sm font-bold text-[#8C8476] mb-1">{title}</p>
+              <p className="text-3xl font-black text-[#4A4238]">{value}</p>
+              {subtitle && <p className="text-xs font-semibold text-[#D3C8B4] mt-1">{subtitle}</p>}
             </div>
-            <div className={`p-3 rounded-xl flex items-center justify-center w-12 h-12 ${bgColor}`}>{icon}</div>
+            <div className={`p-4 rounded-2xl flex items-center justify-center w-14 h-14 ${bgColor} ${textColor} shadow-sm`}>
+              {icon}
+            </div>
           </div>
         </div>
       );
@@ -121,88 +149,138 @@
 
     // --- TABS ---
     function OverviewTab({ stats, onNavigate }) {
+      // State สำหรับเลือกดูข้อมูลคนในกราฟ
+      const [chartUser, setChartUser] = useState('ALL');
+
       const pieData = [
-        { name: 'ลาป่วย', value: 45 }, { name: 'ลาพักร้อน', value: 35 }, { name: 'ลากิจ', value: 15 }, { name: 'อื่นๆ', value: 5 }
+        { name: 'ลาป่วย', value: 45, fill: COLORS.Sick }, 
+        { name: 'ลาพักร้อน', value: 35, fill: COLORS.Annual }, 
+        { name: 'ลากิจ', value: 15, fill: COLORS.Personal }, 
+        { name: 'อื่นๆ', value: 5, fill: COLORS.Other }
       ];
-      const barData = [
-        { name: 'ม.ค.', requests: 12 }, { name: 'ก.พ.', requests: 19 }, { name: 'มี.ค.', requests: 15 }, { name: 'เม.ย.', requests: 25 }, { name: 'พ.ค.', requests: 8 }
-      ];
+      
+      // ดึงข้อมูลวันลามาวาดกราฟแบบ Dynamic ตามคนที่เลือก
+      const dynamicBarData = useMemo(() => {
+        const monthlyDays = Array(12).fill(0);
+        const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+        const filteredReqs = mockRequests.filter(req => 
+          req.status === 'APPROVED' && 
+          req.startDate.startsWith('2026') &&
+          (chartUser === 'ALL' || req.userId === chartUser)
+        );
+
+        filteredReqs.forEach(req => {
+          const monthIdx = parseInt(req.startDate.split('-')[1], 10) - 1;
+          if (monthIdx >= 0 && monthIdx < 12) {
+            monthlyDays[monthIdx] += req.days;
+          }
+        });
+
+        return months.map((m, i) => ({ name: m, days: monthlyDays[i] }));
+      }, [chartUser]);
+
       const thisMonthLeaves = mockRequests.filter(req => req.startDate.startsWith('2026-03') && req.status === 'APPROVED').sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
       const upcomingHolidays = mockHolidays.filter(h => h.date >= '2026-03-01').slice(0, 4);
 
       return (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <StatCard 
               title="กำลังลาวันนี้" value={stats.onLeaveToday} subtitle="คลิกเพื่อดูรายละเอียด"
-              icon={<i className="fa-solid fa-users text-blue-600 text-xl"></i>} color="border-blue-500" bgColor="bg-blue-50" onClick={() => onNavigate('onLeave')}
+              icon={<i className="fa-solid fa-users text-xl"></i>} bgColor="bg-[#A8E6CF]" textColor="text-[#22543D]" onClick={() => onNavigate('onLeave')}
             />
             <StatCard 
               title="รออนุมัติ (Pending)" value={stats.pending} subtitle="รายการคำขอใหม่"
-              icon={<i className="fa-solid fa-clock text-yellow-600 text-xl"></i>} color="border-yellow-500" bgColor="bg-yellow-50"
+              icon={<i className="fa-solid fa-clock text-xl"></i>} bgColor="bg-[#FFDAC1]" textColor="text-[#9C4221]"
             />
             <StatCard 
               title="วันลาเฉลี่ย/คน" value={`${stats.avgDays} วัน`} subtitle="ตั้งแต่ต้นปี"
-              icon={<i className="fa-solid fa-chart-simple text-green-600 text-xl"></i>} color="border-green-500" bgColor="bg-green-50"
+              icon={<i className="fa-solid fa-chart-simple text-xl"></i>} bgColor="bg-[#99C1EA]" textColor="text-[#2C5282]"
             />
             <StatCard 
               title="ประเภทลาบ่อยสุด" value={stats.mostFrequent} subtitle="ในการยื่นขอลาทั้งหมด"
-              icon={<i className="fa-solid fa-file-lines text-purple-600 text-xl"></i>} color="border-purple-500" bgColor="bg-purple-50"
+              icon={<i className="fa-solid fa-file-lines text-xl"></i>} bgColor="bg-[#FFB7B2]" textColor="text-[#9B2C2C]"
             />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                  <i className="fa-solid fa-chart-simple text-gray-400 mr-2"></i> แนวโน้มการลาแต่ละเดือน
-                </h3>
+              
+              {/* กราฟแท่ง (มีตัวกรองคน) */}
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <h3 className="text-lg font-bold text-[#4A4238] flex items-center">
+                    <i className="fa-solid fa-chart-column text-[#8C8476] mr-3"></i> แนวโน้มการลาแต่ละเดือน
+                  </h3>
+                  
+                  {/* เมนูเลือกพนักงาน */}
+                  <div className="flex items-center space-x-2 bg-[#F5F2EA] rounded-full px-4 py-1.5 border border-[#EBE6DD]">
+                    <i className="fa-solid fa-user text-[#8C8476] text-xs"></i>
+                    <select 
+                      className="text-sm font-semibold bg-transparent focus:outline-none text-[#4A4238] cursor-pointer"
+                      value={chartUser}
+                      onChange={(e) => setChartUser(e.target.value)}
+                    >
+                      <option value="ALL">พนักงานทั้งหมด (รวม)</option>
+                      {mockEmployees.map(emp => (
+                        <option key={emp.id} value={emp.id}>{emp.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                      <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-                      <RechartsTooltip cursor={{fill: '#F3F4F6'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                      <Bar dataKey="requests" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={40} />
+                    <BarChart data={dynamicBarData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EBE6DD" />
+                      <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 12, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                      <RechartsTooltip 
+                        cursor={{fill: '#F5F2EA'}} 
+                        contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '16px', color: '#4A4238', fontWeight: 'bold', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }} 
+                        formatter={(value) => [`${value} วัน`, 'จำนวนวันลา']}
+                      />
+                      <Bar dataKey="days" fill="#8C8476" radius={[8, 8, 8, 8]} barSize={36} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div id="this-month-leave-table" className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 scroll-mt-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                    <i className="fa-solid fa-users text-gray-400 mr-2"></i> พนักงานที่ลาในเดือนนี้ (มี.ค. 2026)
+              {/* ตารางคนลาเดือนนี้ */}
+              <div id="this-month-leave-table" className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD] scroll-mt-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-bold text-[#4A4238] flex items-center">
+                    <i className="fa-solid fa-users text-[#8C8476] mr-3"></i> พนักงานที่ลาในเดือนนี้ (มี.ค. 2026)
                   </h3>
-                  <span className="text-sm bg-blue-100 text-blue-700 py-1 px-3 rounded-full font-medium">{thisMonthLeaves.length} รายการ</span>
+                  <span className="text-xs bg-[#A8E6CF] text-[#22543D] py-1.5 px-3 rounded-full font-bold">{thisMonthLeaves.length} รายการ</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                        <th className="py-3 px-4 font-semibold">พนักงาน</th>
-                        <th className="py-3 px-4 font-semibold">ประเภท</th>
-                        <th className="py-3 px-4 font-semibold">วันที่ลา</th>
-                        <th className="py-3 px-4 font-semibold">จำนวนวัน</th>
-                        <th className="py-3 px-4 font-semibold">เหตุผล</th>
+                      <tr className="bg-[#F5F2EA] text-[#8C8476] text-xs uppercase tracking-wider">
+                        <th className="py-3 px-4 font-bold rounded-tl-xl">พนักงาน</th>
+                        <th className="py-3 px-4 font-bold">ประเภท</th>
+                        <th className="py-3 px-4 font-bold">วันที่ลา</th>
+                        <th className="py-3 px-4 font-bold">จำนวน</th>
+                        <th className="py-3 px-4 font-bold rounded-tr-xl">เหตุผล</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[#EBE6DD]">
                       {thisMonthLeaves.map(leave => (
-                        <tr key={leave.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="py-3 px-4 font-medium text-gray-800">{leave.name}</td>
-                          <td className="py-3 px-4">
-                            <span className="flex items-center text-sm font-medium">
+                        <tr key={leave.id} className="hover:bg-[#FDFBF7] transition-colors">
+                          <td className="py-4 px-4 font-bold text-[#4A4238]">{leave.name}</td>
+                          <td className="py-4 px-4">
+                            <span className="flex items-center text-xs font-bold" style={{color: TEXT_COLORS[leave.type] || TEXT_COLORS.Other}}>
                               <span className="w-2.5 h-2.5 rounded-full mr-2" style={{backgroundColor: COLORS[leave.type] || COLORS.Other}}></span>
                               {leave.type}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-sm text-gray-600">
+                          <td className="py-4 px-4 text-xs font-semibold text-[#8C8476]">
                             {leave.startDate === leave.endDate ? leave.startDate : `${leave.startDate} ถึง ${leave.endDate}`}
                           </td>
-                          <td className="py-3 px-4 text-sm text-gray-600">{leave.days} วัน</td>
-                          <td className="py-3 px-4 text-sm text-gray-500 truncate max-w-[120px]" title={leave.reason}>{leave.reason}</td>
+                          <td className="py-4 px-4 text-sm font-bold text-[#8C8476]">{leave.days} วัน</td>
+                          <td className="py-4 px-4 text-xs font-semibold text-[#8C8476] truncate max-w-[120px]" title={leave.reason}>{leave.reason}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -212,37 +290,40 @@
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                  <i className="fa-solid fa-chart-pie text-gray-400 mr-2"></i> สัดส่วนประเภทการลา
+              
+              {/* กราฟวงกลม */}
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-lg font-bold text-[#4A4238] flex items-center mb-6">
+                  <i className="fa-solid fa-chart-pie text-[#8C8476] mr-3"></i> สัดส่วนประเภทการลา
                 </h3>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
-                        {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} />)}
+                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={65} outerRadius={85} paddingAngle={6} stroke="none" dataKey="value">
+                        {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
                       </Pie>
-                      <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                      <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px' }}/>
+                      <RechartsTooltip contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '16px', color: '#4A4238', fontWeight: 'bold' }} />
+                      <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', color: '#8C8476' }}/>
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                  <i className="fa-solid fa-tree text-green-500 mr-2"></i> วันหยุดประจำปีถัดไป
+              {/* วันหยุดประจำปี */}
+              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-lg font-bold text-[#4A4238] flex items-center mb-6">
+                  <i className="fa-solid fa-tree text-[#22543D] mr-3"></i> วันหยุดประจำปีถัดไป
                 </h3>
                 <div className="space-y-4">
                   {upcomingHolidays.map((holiday, idx) => (
-                    <div key={idx} className="flex items-start">
-                      <div className="flex-shrink-0 w-12 h-12 bg-green-50 text-green-600 rounded-lg flex flex-col items-center justify-center border border-green-100 mr-3">
-                        <span className="text-xs font-semibold">{new Date(holiday.date).toLocaleString('default', { month: 'short' })}</span>
-                        <span className="text-lg font-bold leading-none">{new Date(holiday.date).getDate()}</span>
+                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-3 rounded-2xl border border-[#EBE6DD] hover:border-[#D3C8B4] transition-colors">
+                      <div className="flex-shrink-0 w-14 h-14 bg-[#A8E6CF] text-[#22543D] rounded-xl flex flex-col items-center justify-center mr-4 shadow-sm">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-80">{new Date(holiday.date).toLocaleString('default', { month: 'short' })}</span>
+                        <span className="text-xl font-black leading-none">{new Date(holiday.date).getDate()}</span>
                       </div>
-                      <div className="pt-1">
-                        <p className="text-sm font-semibold text-gray-800">{holiday.name}</p>
-                        <p className="text-xs text-gray-500">{holiday.date}</p>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-[#4A4238]">{holiday.name}</p>
+                        <p className="text-xs font-semibold text-[#8C8476] mt-0.5">{holiday.date}</p>
                       </div>
                     </div>
                   ))}
@@ -254,37 +335,95 @@
       );
     }
 
+    // --- CALENDAR TAB (Pastel Theme มินิมอล โค้งมน) ---
     function CalendarTab() {
-      const daysInMonth = Array.from({length: 31}, (_, i) => i + 1);
-      const startDayOfWeek = 0; 
-      
+      const [currentDate, setCurrentDate] = useState(new Date(2026, 2, 1)); 
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const startDayOfWeek = new Date(year, month, 1).getDay();
+
+      const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+      const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
+      const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
+
       const getEventsForDay = (day) => {
-        const dateStr = `2026-03-${day.toString().padStart(2, '0')}`;
+        const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         const hols = mockHolidays.filter(h => h.date === dateStr);
         const leaves = mockRequests.filter(r => r.status === 'APPROVED' && r.startDate <= dateStr && r.endDate >= dateStr);
         return { hols, leaves };
       };
 
       return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
-          <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <i className="fa-solid fa-calendar-days text-blue-600 mr-2"></i> ปฏิทินเดือน มีนาคม 2026
-            </h2>
+        <div className="bg-[#FDFBF7] rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden font-sans">
+          
+          <div className="px-6 py-5 border-b border-[#EBE6DD] flex justify-between items-center bg-[#FDFBF7]">
+            <div className="flex items-center space-x-4">
+              <button onClick={prevMonth} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F2EA] text-[#4A4238] transition-colors focus:outline-none">
+                <i className="fa-solid fa-chevron-left text-sm"></i>
+              </button>
+              <h2 className="text-2xl font-black text-[#4A4238] w-48 text-center">
+                {monthNames[month]} <span className="text-[#8C8476] font-bold">{year}</span>
+              </h2>
+              <button onClick={nextMonth} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#F5F2EA] text-[#4A4238] transition-colors focus:outline-none">
+                <i className="fa-solid fa-chevron-right text-sm"></i>
+              </button>
+            </div>
+            <div className="flex space-x-4 text-xs font-bold uppercase tracking-wider">
+              <span className="flex items-center text-[#8C8476]"><span className="w-3 h-3 bg-[#A8E6CF] rounded-full mr-2"></span> วันหยุด</span>
+              <span className="flex items-center text-[#8C8476]"><span className="w-3 h-3 bg-[#FFB7B2] rounded-full mr-2"></span> ลาป่วย</span>
+              <span className="flex items-center text-[#8C8476]"><span className="w-3 h-3 bg-[#99C1EA] rounded-full mr-2"></span> ลาพักร้อน</span>
+              <span className="flex items-center text-[#8C8476]"><span className="w-3 h-3 bg-[#FFDAC1] rounded-full mr-2"></span> ลากิจ</span>
+            </div>
           </div>
-          <div className="p-5 overflow-auto flex-1">
-            <div className="grid grid-cols-7 gap-2 min-w-[700px]">
-              {['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'].map(day => <div key={day} className="text-center font-semibold text-gray-500 py-2 text-sm">{day}</div>)}
-              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-24 bg-gray-50 rounded-lg"></div>)}
-              {daysInMonth.map(day => {
+
+          <div className="p-6 overflow-auto flex-1 bg-[#FDFBF7]">
+            <div className="grid grid-cols-7 gap-4 min-w-[800px]">
+              
+              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
+                <div key={day} className="text-center font-black text-[#8C8476] pb-2 text-xs tracking-widest">{day}</div>
+              ))}
+              
+              {Array.from({length: startDayOfWeek}).map((_, i) => (
+                <div key={`empty-${i}`} className="h-32 bg-[#F5F2EA]/50 rounded-3xl border border-dashed border-[#EBE6DD]"></div>
+              ))}
+              
+              {Array.from({length: daysInMonth}, (_, i) => i + 1).map(day => {
                 const { hols, leaves } = getEventsForDay(day);
-                const isToday = day === 10;
+                const isToday = year === 2026 && month === 2 && day === 10;
+                
                 return (
-                  <div key={day} className={`h-24 p-1.5 rounded-lg border flex flex-col ${isToday ? 'border-blue-500 bg-blue-50/30' : 'border-gray-200'}`}>
-                    <div className={`text-right text-sm font-medium ${isToday ? 'text-blue-600' : 'text-gray-600'}`}>{day}</div>
-                    <div className="flex-1 overflow-y-auto space-y-1 mt-1 no-scrollbar">
-                      {hols.map((h, i) => <div key={`h-${i}`} className="text-[10px] bg-green-100 text-green-800 px-1.5 py-0.5 rounded truncate">🎉 {h.name}</div>)}
-                      {leaves.map((l, i) => <div key={`l-${i}`} className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded truncate">{l.name}</div>)}
+                  <div key={day} className={`h-32 p-3 rounded-3xl border flex flex-col transition-all hover:shadow-sm ${isToday ? 'border-[#D3C8B4] bg-[#F5F2EA]' : 'border-[#EBE6DD] bg-white'}`}>
+                    
+                    <div className="flex justify-between items-center mb-2">
+                      <div className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-black ${isToday ? 'bg-[#4A4238] text-white shadow-sm' : 'text-[#4A4238]'}`}>
+                        {day}
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 overflow-y-auto space-y-1 no-scrollbar pb-1">
+                      {hols.map((h, i) => (
+                        <div key={`h-${i}`} className="text-[9px] bg-[#A8E6CF] text-[#22543D] px-2 py-1 rounded-full font-bold truncate shadow-sm mb-1 leading-tight">
+                          🎉 {h.name}
+                        </div>
+                      ))}
+                      
+                      {leaves.map((l, i) => {
+                         let tagBg = 'bg-[#E1D1E7]'; let tagText = 'text-[#503D56]';
+                         if (l.type === 'Annual') { tagBg = 'bg-[#99C1EA]'; tagText = 'text-[#2C5282]'; }
+                         if (l.type === 'Sick') { tagBg = 'bg-[#FFB7B2]'; tagText = 'text-[#9B2C2C]'; }
+                         if (l.type === 'Personal') { tagBg = 'bg-[#FFDAC1]'; tagText = 'text-[#9C4221]'; }
+
+                         return (
+                          <div key={`l-${i}`} className={`text-[9px] ${tagBg} ${tagText} px-2 py-1 rounded-full font-bold truncate shadow-sm flex items-center mb-1 leading-tight`}>
+                            <span className="w-1 h-1 rounded-full bg-current opacity-60 mr-1"></span>
+                            {l.name}
+                          </div>
+                         );
+                      })}
                     </div>
                   </div>
                 );
@@ -295,6 +434,7 @@
       );
     }
 
+    // --- EMPLOYEES TAB ---
     function EmployeesTab() {
       const [searchTerm, setSearchTerm] = useState('');
       const [departmentFilter, setDepartmentFilter] = useState('ALL');
@@ -307,54 +447,54 @@
       );
 
       return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full relative">
-          <div className="p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-800">รายชื่อและสิทธิ์การลา</h2>
+        <div className="bg-white rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full relative overflow-hidden">
+          <div className="p-6 border-b border-[#EBE6DD] flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FDFBF7]">
+            <h2 className="text-xl font-black text-[#4A4238]">รายชื่อและสิทธิ์การลา</h2>
             <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg px-3 py-1.5">
-                <i className="fa-solid fa-briefcase text-gray-500"></i>
-                <select className="text-sm bg-transparent focus:outline-none text-gray-700" value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
+              <div className="flex items-center space-x-2 bg-white border border-[#EBE6DD] rounded-full px-4 py-2 shadow-sm">
+                <i className="fa-solid fa-briefcase text-[#8C8476]"></i>
+                <select className="text-sm font-bold bg-transparent focus:outline-none text-[#4A4238] w-full cursor-pointer" value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)}>
                   {departments.map(dep => <option key={dep} value={dep}>{dep === 'ALL' ? 'ทุกแผนก' : dep}</option>)}
                 </select>
               </div>
               <div className="relative">
-                <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                <input type="text" placeholder="ค้นหาชื่อ..." className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none w-full sm:w-64" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8C8476]"></i>
+                <input type="text" placeholder="ค้นหาชื่อ..." className="pl-10 pr-5 py-2 bg-white border border-[#EBE6DD] rounded-full text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#D3C8B4] text-[#4A4238] w-full sm:w-64 placeholder-[#8C8476] shadow-sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
             </div>
           </div>
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-white text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
-                  <th className="py-4 px-5 font-semibold">ชื่อ-นามสกุล</th>
-                  <th className="py-4 px-5 font-semibold">แผนก</th>
-                  <th className="py-4 px-5 font-semibold text-center">ลาพักร้อนคงเหลือ</th>
-                  <th className="py-4 px-5 font-semibold">สถานะ</th>
-                  <th className="py-4 px-5 font-semibold text-right">จัดการ</th>
+                <tr className="bg-[#F5F2EA] text-[#8C8476] text-xs uppercase tracking-widest border-b border-[#EBE6DD]">
+                  <th className="py-4 px-6 font-bold">ชื่อ-นามสกุล</th>
+                  <th className="py-4 px-6 font-bold">แผนก</th>
+                  <th className="py-4 px-6 font-bold text-center">ลาพักร้อนคงเหลือ</th>
+                  <th className="py-4 px-6 font-bold">สถานะ</th>
+                  <th className="py-4 px-6 font-bold text-right">จัดการ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[#EBE6DD]">
                 {filteredEmployees.map((emp) => {
                   const annualLeave = mockBalances.find(b => b.userId === emp.id && b.type === 'Annual');
                   return (
-                    <tr key={emp.id} className="hover:bg-blue-50/50 bg-white">
-                      <td className="py-3 px-5">
+                    <tr key={emp.id} className="hover:bg-[#FDFBF7] transition-colors">
+                      <td className="py-4 px-6">
                         <div className="flex items-center">
-                          <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm mr-3">
+                          <div className="w-10 h-10 rounded-full bg-[#EBE6DD] text-[#4A4238] flex items-center justify-center font-black text-sm mr-4 shadow-sm">
                             {emp.name.charAt(0)}
                           </div>
-                          <span className="font-medium text-gray-800">{emp.name}</span>
+                          <span className="font-bold text-[#4A4238]">{emp.name}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-5 text-gray-600 text-sm">
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">{emp.department}</span>
+                      <td className="py-4 px-6 text-sm">
+                        <span className="px-3 py-1 bg-[#F5F2EA] text-[#8C8476] rounded-lg font-bold text-xs">{emp.department}</span>
                       </td>
-                      <td className="py-3 px-5 text-center font-medium text-gray-700">{annualLeave ? `${annualLeave.remaining} วัน` : '-'}</td>
-                      <td className="py-3 px-5"><span className="px-2.5 py-1 text-[11px] font-semibold bg-green-100 text-green-700 rounded-full border border-green-200">{emp.status}</span></td>
-                      <td className="py-3 px-5 text-right">
-                        <button onClick={() => setSelectedEmployee(emp)} className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-md text-sm font-medium border border-transparent">
-                          ดูข้อมูลการลา
+                      <td className="py-4 px-6 text-center font-black text-[#4A4238]">{annualLeave ? `${annualLeave.remaining} วัน` : '-'}</td>
+                      <td className="py-4 px-6"><span className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider bg-[#A8E6CF] text-[#22543D] rounded-full">{emp.status}</span></td>
+                      <td className="py-4 px-6 text-right">
+                        <button onClick={() => setSelectedEmployee(emp)} className="text-[#8C8476] hover:text-[#4A4238] hover:bg-[#F5F2EA] px-4 py-2 rounded-xl text-sm font-bold transition-colors">
+                          ดูข้อมูล
                         </button>
                       </td>
                     </tr>
@@ -366,27 +506,35 @@
 
           {/* Modal พนักงาน */}
           {selectedEmployee && (
-            <div className="absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
-                <div className="flex justify-between items-start p-6 border-b border-gray-100">
+            <div className="absolute inset-0 bg-[#4A4238]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-[#FDFBF7] rounded-[2rem] shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-[#EBE6DD]">
+                <div className="flex justify-between items-start p-8 border-b border-[#EBE6DD] bg-white">
                   <div className="flex items-center">
-                    <div className="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mr-4">{selectedEmployee.name.charAt(0)}</div>
-                    <div><h2 className="text-2xl font-bold text-gray-900">{selectedEmployee.name}</h2></div>
+                    <div className="w-16 h-16 rounded-full bg-[#F5F2EA] text-[#4A4238] flex items-center justify-center font-black text-2xl mr-5 shadow-sm">{selectedEmployee.name.charAt(0)}</div>
+                    <div><h2 className="text-2xl font-black text-[#4A4238]">{selectedEmployee.name}</h2></div>
                   </div>
-                  <button onClick={() => setSelectedEmployee(null)} className="p-2 hover:bg-gray-100 rounded-full text-gray-400"><i className="fa-solid fa-xmark text-xl"></i></button>
+                  <button onClick={() => setSelectedEmployee(null)} className="w-10 h-10 flex justify-center items-center bg-[#F5F2EA] hover:bg-[#EBE6DD] rounded-full text-[#8C8476] hover:text-[#4A4238] transition-colors"><i className="fa-solid fa-xmark text-lg"></i></button>
                 </div>
-                <div className="p-6 overflow-y-auto flex-1 bg-gray-50 space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="p-8 overflow-y-auto flex-1 bg-[#F5F2EA] space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {mockBalances.filter(b => b.userId === selectedEmployee.id).map((balance, idx) => {
                       const percent = (balance.used / balance.entitled) * 100;
+                      let barColor = 'bg-[#99C1EA]';
+                      if(balance.type === 'Sick') barColor = 'bg-[#FFB7B2]';
+                      if(balance.type === 'Personal') barColor = 'bg-[#FFDAC1]';
+                      
                       return (
-                        <div key={idx} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                          <div className="flex justify-between items-center mb-3">
-                            <span className="font-bold text-gray-700">{balance.type}</span>
-                            <span className="text-3xl font-black text-gray-800">{balance.remaining} <span className="text-sm font-medium text-gray-400">วัน</span></span>
+                        <div key={idx} className="bg-white border border-[#EBE6DD] rounded-3xl p-6 shadow-sm">
+                          <div className="flex justify-between items-center mb-5">
+                            <span className="font-bold text-[#8C8476]">{balance.type}</span>
+                            <span className="text-4xl font-black text-[#4A4238]">{balance.remaining} <span className="text-sm font-bold text-[#D3C8B4]">วัน</span></span>
                           </div>
-                          <div className="w-full bg-gray-100 rounded-full h-2.5 mb-2 overflow-hidden">
-                            <div className="h-2.5 rounded-full bg-blue-500" style={{ width: `${percent}%` }}></div>
+                          <div className="w-full bg-[#F5F2EA] rounded-full h-3 mb-3 overflow-hidden">
+                            <div className={`h-full rounded-full ${barColor}`} style={{ width: `${percent}%` }}></div>
+                          </div>
+                          <div className="flex justify-between text-xs font-bold text-[#8C8476] mt-2">
+                            <span>ใช้ไป {balance.used}</span>
+                            <span>ทั้งหมด {balance.entitled}</span>
                           </div>
                         </div>
                       )
@@ -400,6 +548,7 @@
       );
     }
 
+    // --- REPORTS TAB ---
     function ReportsTab() {
       const [selectedYear, setSelectedYear] = useState('2026');
       const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
@@ -418,33 +567,33 @@
       }, [selectedYear]);
 
       return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
-          <div className="p-5 border-b border-gray-200 flex justify-between bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <i className="fa-solid fa-table text-blue-600 mr-2"></i> ตารางสรุปการลาประจำปี {selectedYear}
+        <div className="bg-white rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden">
+          <div className="p-6 border-b border-[#EBE6DD] flex justify-between bg-[#FDFBF7]">
+            <h2 className="text-lg font-black text-[#4A4238] flex items-center">
+              <i className="fa-solid fa-table text-[#8C8476] mr-3"></i> ตารางสรุปการลาประจำปี {selectedYear}
             </h2>
           </div>
-          <div className="overflow-x-auto flex-1 p-5">
-            <table className="w-full text-left border-collapse border border-gray-200 min-w-[1000px]">
+          <div className="overflow-x-auto flex-1 p-6 bg-[#F5F2EA]">
+            <table className="w-full text-left border-collapse border border-[#EBE6DD] min-w-[1000px] rounded-2xl overflow-hidden shadow-sm bg-white">
               <thead>
-                <tr className="bg-gray-100 text-gray-700 text-xs uppercase tracking-wider">
-                  <th className="py-3 px-4 border border-gray-200 font-semibold sticky left-0 bg-gray-100 z-10 w-48">พนักงาน</th>
-                  {months.map(month => <th key={month} className="py-3 px-2 border border-gray-200 font-semibold text-center w-12">{month}</th>)}
-                  <th className="py-3 px-4 border border-gray-200 font-bold text-center bg-blue-50 text-blue-800">รวม (วัน)</th>
+                <tr className="bg-[#FDFBF7] text-[#8C8476] text-xs uppercase tracking-widest border-b border-[#EBE6DD]">
+                  <th className="py-4 px-5 border-r border-[#EBE6DD] font-bold sticky left-0 bg-[#FDFBF7] z-10 w-48 shadow-[1px_0_0_0_#EBE6DD]">พนักงาน</th>
+                  {months.map(month => <th key={month} className="py-4 px-2 border-r border-[#EBE6DD] font-bold text-center w-12">{month}</th>)}
+                  <th className="py-4 px-5 font-black text-center bg-[#F5F2EA] text-[#4A4238]">รวม (วัน)</th>
                 </tr>
               </thead>
               <tbody>
                 {summaryData.map((emp, index) => (
-                  <tr key={emp.id} className="bg-white hover:bg-blue-50">
-                    <td className="py-3 px-4 border border-gray-200 font-medium text-gray-800 sticky left-0 bg-inherit z-10 shadow-[1px_0_0_0_#e5e7eb]">
+                  <tr key={emp.id} className="hover:bg-[#FDFBF7] transition-colors border-b border-[#EBE6DD] last:border-0">
+                    <td className="py-3 px-5 border-r border-[#EBE6DD] font-bold text-[#4A4238] sticky left-0 bg-white z-10 shadow-[1px_0_0_0_#EBE6DD]">
                       <div className="truncate w-44" title={emp.name}>{emp.name}</div>
                     </td>
                     {emp.monthlyDays.map((days, idx) => (
-                      <td key={idx} className={`py-3 px-2 border border-gray-200 text-center text-sm ${days > 0 ? 'text-blue-600 font-semibold bg-blue-50/30' : 'text-gray-400'}`}>
+                      <td key={idx} className={`py-3 px-2 border-r border-[#EBE6DD] text-center text-sm font-bold ${days > 0 ? 'text-[#4A4238] bg-[#F5F2EA]' : 'text-[#D3C8B4]'}`}>
                         {days > 0 ? days : '-'}
                       </td>
                     ))}
-                    <td className="py-3 px-4 border border-gray-200 text-center font-bold text-blue-700 bg-blue-50/50">{emp.total}</td>
+                    <td className="py-3 px-5 text-center font-black text-[#4A4238] bg-[#F5F2EA]">{emp.total}</td>
                   </tr>
                 ))}
               </tbody>
@@ -462,14 +611,16 @@
       const stats = useMemo(() => ({ pending: 3, avgDays: '1.2', mostFrequent: 'Sick', onLeaveToday: 2 }), []);
 
       return (
-        <div className="flex h-screen bg-gray-50">
+        <div className="flex h-screen bg-[#F5F2EA]">
           {/* Sidebar */}
-          <aside className="bg-white w-64 border-r border-gray-200 flex-shrink-0 hidden md:flex flex-col">
-            <div className="h-16 flex items-center px-6 border-b border-gray-200">
-              <i className="fa-solid fa-calendar-days text-blue-600 text-xl mr-2"></i>
-              <span className="text-xl font-bold text-gray-800">LeaveSystem</span>
+          <aside className="bg-[#FDFBF7] w-64 border-r border-[#EBE6DD] flex-shrink-0 hidden md:flex flex-col shadow-sm z-20">
+            <div className="h-20 flex items-center px-8 border-b border-[#EBE6DD] bg-white">
+              <div className="w-10 h-10 bg-[#A8E6CF] rounded-xl flex items-center justify-center mr-3 shadow-sm">
+                <i className="fa-solid fa-leaf text-[#22543D] text-lg"></i>
+              </div>
+              <span className="text-xl font-black text-[#4A4238] tracking-wide">LeaveApp</span>
             </div>
-            <nav className="flex-1 p-4 space-y-1">
+            <nav className="flex-1 p-5 space-y-2">
               <NavItem icon={<i className="fa-solid fa-chart-pie text-lg"></i>} label="ภาพรวม (Overview)" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
               <NavItem icon={<i className="fa-solid fa-calendar text-lg"></i>} label="ปฏิทิน (Calendar)" active={activeTab === 'calendar'} onClick={() => setActiveTab('calendar')} />
               <NavItem icon={<i className="fa-solid fa-users text-lg"></i>} label="พนักงาน (Employees)" active={activeTab === 'employees'} onClick={() => setActiveTab('employees')} />
@@ -478,17 +629,34 @@
           </aside>
 
           {/* Main */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6">
+          <div className="flex-1 flex flex-col overflow-hidden relative">
+            <header className="h-20 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center justify-between px-6 sm:px-8 shadow-sm z-10">
               <div className="flex items-center">
-                <button className="md:hidden mr-4 text-gray-500" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                <button className="md:hidden mr-5 w-10 h-10 flex justify-center items-center text-[#8C8476] bg-[#F5F2EA] rounded-xl transition-colors" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                   <i className="fa-solid fa-bars text-xl"></i>
                 </button>
-                <h1 className="text-xl font-semibold">{activeTab === 'overview' ? 'ภาพรวมระบบ' : activeTab === 'calendar' ? 'ปฏิทินการลา' : activeTab === 'employees' ? 'ระบบจัดการพนักงาน' : 'รายงานสรุปการลา'}</h1>
+                <h1 className="text-2xl font-black text-[#4A4238] tracking-wide">
+                  {activeTab === 'overview' ? 'ภาพรวมระบบ' : activeTab === 'calendar' ? 'ปฏิทินการลา' : activeTab === 'employees' ? 'ระบบจัดการพนักงาน' : 'รายงานสรุปการลา'}
+                </h1>
               </div>
             </header>
 
-            <main className="flex-1 overflow-auto p-4 sm:p-6 bg-gray-50/50">
+            {/* Mobile Menu Backdrop */}
+            {isMobileMenuOpen && (
+              <div className="md:hidden fixed inset-0 bg-[#4A4238]/40 backdrop-blur-sm z-40" onClick={() => setIsMobileMenuOpen(false)}></div>
+            )}
+            
+            {/* Mobile Menu Dropdown */}
+            {isMobileMenuOpen && (
+              <div className="md:hidden absolute top-20 left-0 right-0 bg-[#FDFBF7] border-b border-[#EBE6DD] p-5 space-y-2 z-50 shadow-2xl animate-in slide-in-from-top-2">
+                 <NavItem icon={<i className="fa-solid fa-chart-pie text-lg"></i>} label="ภาพรวม" active={activeTab === 'overview'} onClick={() => {setActiveTab('overview'); setIsMobileMenuOpen(false)}} />
+                 <NavItem icon={<i className="fa-solid fa-calendar text-lg"></i>} label="ปฏิทิน" active={activeTab === 'calendar'} onClick={() => {setActiveTab('calendar'); setIsMobileMenuOpen(false)}} />
+                 <NavItem icon={<i className="fa-solid fa-users text-lg"></i>} label="พนักงาน" active={activeTab === 'employees'} onClick={() => {setActiveTab('employees'); setIsMobileMenuOpen(false)}} />
+                 <NavItem icon={<i className="fa-solid fa-table text-lg"></i>} label="รายงานสรุป" active={activeTab === 'reports'} onClick={() => {setActiveTab('reports'); setIsMobileMenuOpen(false)}} />
+              </div>
+            )}
+
+            <main className="flex-1 overflow-auto p-6 sm:p-8 bg-[#F5F2EA]">
               {activeTab === 'overview' && <OverviewTab stats={stats} onNavigate={(action) => { if(action === 'onLeave') document.getElementById('this-month-leave-table')?.scrollIntoView({ behavior: 'smooth' }); }} />}
               {activeTab === 'calendar' && <CalendarTab />}
               {activeTab === 'employees' && <EmployeesTab />}
