@@ -36,8 +36,8 @@
     ::-webkit-scrollbar-thumb:hover { background: #8C8476; } 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    body { font-family: 'Prompt', sans-serif; font-size: 15px; }
-    input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
+    body { font-family: 'Prompt', sans-serif; font-size: 16px; }
+    input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
   </style>
 </head>
 <body class="bg-[#F5F2EA] text-[#4A4238] selection:bg-[#D3E4CD] selection:text-[#3A4D39]">
@@ -53,7 +53,6 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttbWVlcWluemZndG9pbHJhYmlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Njg2MTcsImV4cCI6MjA4ODI0NDYxN30.zrccfQOVFQof1jMj1TRbPiIYYukcnYYBqi3i1x6qir0';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // สีประจำประเภทการลา (ให้รองรับการเช็คแบบมี Case-insensitive)
     const COLORS = { Annual: '#7EB1E0', Sick: '#F58D85', Personal: '#F8C48B', Other: '#C5B1D4', Holiday: '#86D1B3' };
     const TEXT_COLORS = { Annual: '#2C5282', Sick: '#9B2C2C', Personal: '#9C4221', Other: '#503D56', Holiday: '#22543D' };
     
@@ -61,14 +60,14 @@
       return (
         <button
           onClick={onClick}
-          className={`w-full flex items-center px-5 py-3 text-sm font-bold rounded-xl transition-all relative ${
+          className={`w-full flex items-center px-5 py-4 text-base font-bold rounded-xl transition-all relative ${
             active ? 'bg-[#F5F2EA] text-[#4A4238] shadow-sm' : 'text-[#8C8476] hover:bg-[#F5F2EA]/50 hover:text-[#4A4238]'
           }`}
         >
-          <span className={`mr-3 w-5 h-5 flex items-center justify-center text-base ${active ? 'text-[#8C8476]' : 'text-[#D3C8B4]'}`}>{icon}</span>
+          <span className={`mr-4 w-6 h-6 flex items-center justify-center text-lg ${active ? 'text-[#8C8476]' : 'text-[#D3C8B4]'}`}>{icon}</span>
           {label}
           {badge > 0 && (
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#F58D85] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-sm">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#F58D85] text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full shadow-sm">
               {badge}
             </span>
           )}
@@ -78,14 +77,14 @@
 
     function StatCard({ title, value, subtitle, icon, bgColor, textColor, onClick }) {
       return (
-        <div onClick={onClick} className={`bg-white p-5 rounded-2xl shadow-sm border border-[#EBE6DD] transition-all ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-1' : ''}`}>
+        <div onClick={onClick} className={`bg-white p-6 rounded-2xl shadow-sm border border-[#EBE6DD] transition-all ${onClick ? 'cursor-pointer hover:shadow-md hover:-translate-y-1' : ''}`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold text-[#8C8476] mb-0.5">{title}</p>
-              <p className="text-2xl font-black text-[#4A4238]">{value}</p>
-              {subtitle && <p className="text-[10px] font-semibold text-[#D3C8B4] mt-0.5">{subtitle}</p>}
+              <p className="text-sm font-bold text-[#8C8476] mb-1">{title}</p>
+              <p className="text-3xl font-black text-[#4A4238]">{value}</p>
+              {subtitle && <p className="text-xs font-semibold text-[#D3C8B4] mt-1">{subtitle}</p>}
             </div>
-            <div className={`p-3 rounded-xl flex items-center justify-center w-12 h-12 ${bgColor} ${textColor} shadow-sm text-lg`}>{icon}</div>
+            <div className={`p-4 rounded-xl flex items-center justify-center w-14 h-14 ${bgColor} ${textColor} shadow-sm text-2xl`}>{icon}</div>
           </div>
         </div>
       );
@@ -95,35 +94,35 @@
       const pendingRequests = requests.filter(r => r.status === 'PENDING' || r.status === 'SUBMITTED');
       return (
         <div className="bg-white rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
-          <div className="p-6 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
-            <h2 className="text-xl font-black text-[#4A4238]">รายการรออนุมัติ</h2>
-            <span className="bg-[#FCE2C2] text-[#7A5A35] px-4 py-1.5 rounded-full text-xs font-black border border-[#EBE6DD]">
+          <div className="p-8 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
+            <h2 className="text-2xl font-black text-[#4A4238]">รายการรออนุมัติ</h2>
+            <span className="bg-[#FCE2C2] text-[#7A5A35] px-5 py-2 rounded-full text-sm font-black border border-[#EBE6DD]">
               ทั้งหมด {pendingRequests.length} รายการ
             </span>
           </div>
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#F5F2EA] text-[#8C8476] text-[10px] font-black uppercase tracking-widest">
+              <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs font-black uppercase tracking-widest">
                 <tr>
-                  <th className="py-4 px-8">พนักงาน</th>
-                  <th className="py-4 px-8">ประเภท</th>
-                  <th className="py-4 px-8">วันที่ลา</th>
-                  <th className="py-4 px-8 text-center">จำนวน</th>
-                  <th className="py-4 px-8">เหตุผล</th>
+                  <th className="py-5 px-10">พนักงาน</th>
+                  <th className="py-5 px-10">ประเภท</th>
+                  <th className="py-5 px-10">วันที่ลา</th>
+                  <th className="py-5 px-10 text-center">จำนวน</th>
+                  <th className="py-5 px-10">เหตุผล</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EBE6DD] text-sm">
+              <tbody className="divide-y divide-[#EBE6DD] text-base">
                 {pendingRequests.length > 0 ? pendingRequests.map(req => (
                   <tr key={req.id} className="hover:bg-[#FDFBF7] transition-colors">
-                    <td className="py-5 px-8 font-bold text-[#4A4238]">{req.name}</td>
-                    <td className="py-5 px-8">
-                       <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black shadow-sm" style={{backgroundColor: `${COLORS[req.type] || '#EBE6DD'}44`, color: TEXT_COLORS[req.type] || '#4A4238', border: `1px solid ${COLORS[req.type]}44`}}>
+                    <td className="py-6 px-10 font-bold text-[#4A4238] text-lg">{req.name}</td>
+                    <td className="py-6 px-10">
+                       <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black shadow-sm" style={{backgroundColor: `${COLORS[req.type] || '#EBE6DD'}44`, color: TEXT_COLORS[req.type] || '#4A4238', border: `1px solid ${COLORS[req.type]}44`}}>
                          {req.type}
                        </span>
                     </td>
-                    <td className="py-5 px-8 font-semibold text-[#8C8476]">{req.startDate}</td>
-                    <td className="py-5 px-8 text-center font-black text-[#4A4238]">{req.days} <span className="text-[10px] font-bold text-[#8C8476]">วัน</span></td>
-                    <td className="py-5 px-8 text-[#8C8476] truncate max-w-[200px]">{req.reason || '-'}</td>
+                    <td className="py-6 px-10 font-semibold text-[#8C8476]">{req.startDate}</td>
+                    <td className="py-6 px-10 text-center font-black text-[#4A4238] text-lg">{req.days} <span className="text-xs font-bold text-[#8C8476]">วัน</span></td>
+                    <td className="py-6 px-10 text-[#8C8476] truncate max-w-[250px]">{req.reason || '-'}</td>
                   </tr>
                 )) : (
                   <tr><td colSpan="5" className="py-32 text-center font-bold text-[#D3C8B4] text-xl">ไม่มีรายการรออนุมัติในขณะนี้</td></tr>
@@ -187,7 +186,7 @@
 
       return (
         <div className="space-y-6 animate-in fade-in duration-500">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             <StatCard title="รออนุมัติ" value={stats.pending} subtitle="รายการใหม่" icon={<i className="fa-solid fa-clock"></i>} bgColor="bg-[#FCE2C2]" textColor="text-[#7A5A35]" onClick={() => onNavigate('pending')} />
             <StatCard title="การใช้สิทธิลา" value={`${stats.usageRate}%`} subtitle="ปี 2026" icon={<i className="fa-solid fa-percent"></i>} bgColor="bg-[#D3E4CD]" textColor="text-[#3A4D39]" />
             <StatCard title="วันลาเฉลี่ย" value={`${stats.avgDays} วัน`} subtitle="ต่อพนักงาน" icon={<i className="fa-solid fa-chart-simple"></i>} bgColor="bg-[#D1E8E2]" textColor="text-[#365A53]" />
@@ -196,72 +195,72 @@
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                  <h3 className="text-base font-bold text-[#4A4238]">สถิติการลาแต่ละเดือน</h3>
-                  <select className="text-[10px] font-bold bg-[#F5F2EA] px-3 py-1.5 rounded-full border border-[#EBE6DD] outline-none text-[#4A4238]" value={chartUser} onChange={(e) => setChartUser(e.target.value)}>
+                  <h3 className="text-xl font-bold text-[#4A4238]">สถิติการลาแต่ละเดือน</h3>
+                  <select className="text-sm font-bold bg-[#F5F2EA] px-4 py-2 rounded-full border border-[#EBE6DD] outline-none text-[#4A4238] cursor-pointer" value={chartUser} onChange={(e) => setChartUser(e.target.value)}>
                     <option value="ALL">พนักงานทั้งหมด (รวม)</option>
                     {employees.map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
                   </select>
                 </div>
-                <div className="h-60">
+                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={dynamicBarData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                    <BarChart data={dynamicBarData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#EBE6DD" />
-                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 10, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                      <RechartsTooltip cursor={{fill: '#F5F2EA'}} contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '12px', fontWeight: '700', fontSize: '12px' }} />
-                      <Bar dataKey="days" fill="#D3C8B4" radius={[4, 4, 4, 4]} barSize={28} />
+                      <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 12, fill: '#8C8476', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+                      <RechartsTooltip cursor={{fill: '#F5F2EA'}} contentStyle={{ backgroundColor: '#FDFBF7', borderColor: '#EBE6DD', borderRadius: '12px', fontWeight: '700', fontSize: '14px' }} />
+                      <Bar dataKey="days" fill="#D3C8B4" radius={[6, 6, 6, 6]} barSize={32} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
-                  <h3 className="text-base font-bold text-[#4A4238]">พนักงานที่ลา (ประจำวัน)</h3>
-                  <input type="date" value={selectedAbsenceDate} onChange={(e) => setSelectedAbsenceDate(e.target.value)} className="bg-[#F5F2EA] px-2.5 py-1 rounded-lg border border-[#EBE6DD] text-xs font-black text-[#4A4238] outline-none" />
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
+                  <h3 className="text-xl font-bold text-[#4A4238]">พนักงานที่ลา (ประจำวัน)</h3>
+                  <input type="date" value={selectedAbsenceDate} onChange={(e) => setSelectedAbsenceDate(e.target.value)} className="bg-[#F5F2EA] px-4 py-2 rounded-lg border border-[#EBE6DD] text-sm font-black text-[#4A4238] outline-none" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {absencesOnDate.length > 0 ? absencesOnDate.map((abs, idx) => (
-                    <div key={idx} className="flex items-center p-3 rounded-xl bg-[#FDFBF7] border border-[#EBE6DD]">
-                      <div className="w-8 h-8 rounded-full bg-[#EBE6DD] flex items-center justify-center font-black mr-3 text-sm">{abs.name?.charAt(0)}</div>
+                    <div key={idx} className="flex items-center p-4 rounded-2xl bg-[#FDFBF7] border border-[#EBE6DD] hover:shadow-md transition-all">
+                      <div className="w-10 h-10 rounded-full bg-[#EBE6DD] flex items-center justify-center font-black mr-4 shadow-sm text-lg text-[#4A4238]">{abs.name?.charAt(0)}</div>
                       <div>
-                        <p className="text-xs font-bold text-[#4A4238]">{abs.name}</p>
-                        <p className="text-[9px] font-bold uppercase tracking-widest" style={{color: TEXT_COLORS[abs.type] || '#8C8476'}}>{abs.type}</p>
+                        <p className="text-base font-bold text-[#4A4238]">{abs.name}</p>
+                        <p className="text-xs font-bold uppercase tracking-widest" style={{color: TEXT_COLORS[abs.type] || '#8C8476'}}>{abs.type}</p>
                       </div>
                     </div>
                   )) : (
-                    <div className="col-span-full py-8 text-center text-xs font-bold text-[#D3C8B4] border border-dashed border-[#EBE6DD] rounded-2xl">ไม่มีพนักงานลาในวันที่เลือก</div>
+                    <div className="col-span-full py-12 text-center text-base font-bold text-[#D3C8B4] border border-dashed border-[#EBE6DD] rounded-2xl">ไม่มีพนักงานลาในวันที่เลือก</div>
                   )}
                 </div>
               </div>
 
-              <div id="this-month-leave-table" className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <h3 className="text-base font-bold text-[#4A4238] mb-6">สรุปพนักงานลาประจำเดือน</h3>
+              <div id="this-month-leave-table" className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-xl font-bold text-[#4A4238] mb-6">สรุปพนักงานลาประจำเดือน</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
-                    <thead className="bg-[#F5F2EA] text-[#8C8476] text-[10px] uppercase tracking-widest font-black">
+                    <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs uppercase tracking-widest font-black">
                       <tr>
-                        <th className="py-3 px-6 rounded-tl-xl">พนักงาน</th>
-                        <th className="py-3 px-6">วันที่ลา</th>
-                        <th className="py-3 px-6">ประเภท</th>
-                        <th className="py-3 px-6 rounded-tr-xl">จำนวน</th>
+                        <th className="py-4 px-8 rounded-tl-xl">พนักงาน</th>
+                        <th className="py-4 px-8">วันที่ลา</th>
+                        <th className="py-4 px-8">ประเภท</th>
+                        <th className="py-4 px-8 text-center rounded-tr-xl">จำนวน</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#EBE6DD] text-sm">
+                    <tbody className="divide-y divide-[#EBE6DD] text-base">
                       {thisMonthLeaves.length > 0 ? thisMonthLeaves.map(leave => (
                         <tr key={leave.id} className="hover:bg-[#FDFBF7] transition-colors">
-                          <td className="py-4 px-6 font-bold text-[#4A4238] text-xs">{leave.name}</td>
-                          <td className="py-4 px-6 font-semibold text-[#8C8476] text-[11px]">{leave.startDate}</td>
-                          <td className="py-4 px-6">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-black" style={{backgroundColor: `${COLORS[leave.type] || '#EBE6DD'}33`, color: TEXT_COLORS[leave.type] || '#4A4238', border: `1px solid ${COLORS[leave.type] || '#D3C8B4'}44`}}>
+                          <td className="py-5 px-8 font-bold text-[#4A4238] text-lg">{leave.name}</td>
+                          <td className="py-5 px-8 font-semibold text-[#8C8476] text-base">{leave.startDate}</td>
+                          <td className="py-5 px-8">
+                            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black shadow-sm" style={{backgroundColor: `${COLORS[leave.type] || '#EBE6DD'}33`, color: TEXT_COLORS[leave.type] || '#4A4238', border: `1px solid ${COLORS[leave.type] || '#D3C8B4'}44`}}>
                               {leave.type}
                             </span>
                           </td>
-                          <td className="py-4 px-6 font-black text-[#4A4238] text-xs">{leave.days} <span className="text-[10px] font-bold text-[#8C8476]">วัน</span></td>
+                          <td className="py-5 px-8 text-center font-black text-[#4A4238] text-lg">{leave.days} <span className="text-xs font-bold text-[#8C8476]">วัน</span></td>
                         </tr>
-                      )) : <tr><td colSpan="4" className="py-12 text-center text-xs font-bold text-[#D3C8B4]">ไม่มีข้อมูลการลาในเดือนนี้</td></tr>}
+                      )) : <tr><td colSpan="4" className="py-20 text-center text-lg font-bold text-[#D3C8B4]">ไม่มีข้อมูลการลาในเดือนนี้</td></tr>}
                     </tbody>
                   </table>
                 </div>
@@ -269,35 +268,35 @@
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <h3 className="text-base font-bold text-[#4A4238] mb-6">สัดส่วนประเภทการลา</h3>
-                <div className="h-60">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-xl font-bold text-[#4A4238] mb-6">สัดส่วนประเภทการลา</h3>
+                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pieData} cx="50%" cy="45%" innerRadius={55} outerRadius={75} paddingAngle={5} stroke="none" dataKey="value">
+                      <Pie data={pieData} cx="50%" cy="45%" innerRadius={60} outerRadius={85} paddingAngle={6} stroke="none" dataKey="value">
                         {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
                       </Pie>
-                      <RechartsTooltip contentStyle={{ borderRadius: '12px', fontWeight: 'bold', fontSize: '12px' }} />
-                      <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 'bold' }} />
+                      <RechartsTooltip contentStyle={{ borderRadius: '12px', fontWeight: 'bold', fontSize: '13px' }} />
+                      <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ paddingTop: '25px', fontSize: '13px', fontWeight: 'bold' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-[#EBE6DD]">
-                <h3 className="text-base font-bold text-[#4A4238] mb-4">วันหยุดถัดไป</h3>
-                <div className="space-y-3">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#EBE6DD]">
+                <h3 className="text-xl font-bold text-[#4A4238] mb-4">วันหยุดถัดไป</h3>
+                <div className="space-y-4">
                   {upcomingHolidays.length > 0 ? upcomingHolidays.map((holiday, idx) => (
-                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-3 rounded-xl border border-[#EBE6DD]">
-                      <div className="w-10 h-10 bg-[#D3E4CD] text-[#22543D] rounded-lg flex items-center justify-center mr-3 font-black text-sm">
+                    <div key={idx} className="flex items-center bg-[#FDFBF7] p-4 rounded-xl border border-[#EBE6DD] shadow-sm">
+                      <div className="w-12 h-12 bg-[#D3E4CD] text-[#22543D] rounded-lg flex items-center justify-center mr-4 font-black text-xl">
                         {new Date(holiday.date).getDate()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-[#4A4238] truncate">{holiday.name}</p>
-                        <p className="text-[9px] font-bold text-[#8C8476]">{holiday.date}</p>
+                        <p className="text-base font-bold text-[#4A4238] truncate">{holiday.name}</p>
+                        <p className="text-xs font-bold text-[#8C8476]">{holiday.date}</p>
                       </div>
                     </div>
-                  )) : <p className="text-center text-xs font-bold text-[#8C8476]">ไม่มีข้อมูลวันหยุด</p>}
+                  )) : <p className="text-center text-sm font-bold text-[#8C8476]">ไม่มีข้อมูลวันหยุด</p>}
                 </div>
               </div>
             </div>
@@ -322,26 +321,26 @@
       };
 
       return (
-        <div className="bg-[#FDFBF7] rounded-[2rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in zoom-in-95 duration-500">
-          <div className="px-8 py-5 border-b border-[#EBE6DD] flex justify-between items-center bg-white">
+        <div className="bg-[#FDFBF7] rounded-[2.5rem] shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="px-10 py-6 border-b border-[#EBE6DD] flex justify-between items-center bg-white">
             <div className="flex items-center space-x-6">
-              <button onClick={() => setCurrentDate(new Date(year, month - 1, 1))} className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all"><i className="fa-solid fa-chevron-left text-sm"></i></button>
-              <h2 className="text-xl font-black text-[#4A4238]">{monthNames[month]} {year}</h2>
-              <button onClick={() => setCurrentDate(new Date(year, month + 1, 1))} className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all"><i className="fa-solid fa-chevron-right text-sm"></i></button>
+              <button onClick={() => setCurrentDate(new Date(year, month - 1, 1))} className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all"><i className="fa-solid fa-chevron-left text-base"></i></button>
+              <h2 className="text-2xl font-black text-[#4A4238] tracking-tight">{monthNames[month]} {year}</h2>
+              <button onClick={() => setCurrentDate(new Date(year, month + 1, 1))} className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F5F2EA] text-[#4A4238] hover:bg-[#EBE6DD] shadow-sm transition-all"><i className="fa-solid fa-chevron-right text-base"></i></button>
             </div>
           </div>
-          <div className="p-4 overflow-auto flex-1 no-scrollbar bg-[#FDFBF7]">
-            <div className="grid grid-cols-7 gap-3 min-w-[700px]">
-              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => <div key={day} className="text-center font-black text-[#8C8476] pb-2 text-[10px] tracking-widest">{day}</div>)}
-              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-32 bg-[#F5F2EA]/30 rounded-2xl border border-dashed border-[#EBE6DD]"></div>)}
+          <div className="p-6 overflow-auto flex-1 no-scrollbar bg-[#FDFBF7]">
+            <div className="grid grid-cols-7 gap-4 min-w-[800px]">
+              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => <div key={day} className="text-center font-black text-[#8C8476] pb-3 text-xs tracking-widest">{day}</div>)}
+              {Array.from({length: startDayOfWeek}).map((_, i) => <div key={`empty-${i}`} className="h-36 bg-[#F5F2EA]/30 rounded-2xl border border-dashed border-[#EBE6DD]"></div>)}
               {Array.from({length: daysInMonth}, (_, i) => i + 1).map(day => {
                 const { hols, leaves } = getEventsForDay(day);
                 return (
-                  <div key={day} className="h-32 p-3 rounded-2xl border border-[#EBE6DD] bg-white transition-all group flex flex-col hover:border-[#D3C8B4] hover:shadow-sm">
-                    <span className="text-sm font-black text-[#4A4238] mb-2">{day}</span>
-                    <div className="space-y-1.5 flex-1 overflow-y-auto no-scrollbar">
-                      {hols.map((h, i) => <div key={`h-${i}`} className="text-[10px] bg-[#86D1B3] text-white px-2 py-0.5 rounded-lg font-bold truncate">🎉 {h.name}</div>)}
-                      {leaves.map((l, i) => <div key={`l-${i}`} className="text-[10px] px-2.5 py-0.5 rounded-lg font-bold truncate border shadow-sm" style={{backgroundColor: `${COLORS[l.type] || '#EBE6DD'}33`, color: TEXT_COLORS[l.type] || '#4A4238', borderColor: `${COLORS[l.type] || '#EBE6DD'}44`}}>{l.name}</div>)}
+                  <div key={day} className="h-36 p-4 rounded-2xl border border-[#EBE6DD] bg-white transition-all group flex flex-col hover:border-[#D3C8B4] hover:shadow-md">
+                    <span className="text-base font-black text-[#4A4238] mb-2">{day}</span>
+                    <div className="space-y-2 flex-1 overflow-y-auto no-scrollbar">
+                      {hols.map((h, i) => <div key={`h-${i}`} className="text-xs bg-[#86D1B3] text-white px-3 py-1 rounded-lg font-bold truncate">🎉 {h.name}</div>)}
+                      {leaves.map((l, i) => <div key={`l-${i}`} className="text-xs px-3 py-1 rounded-lg font-bold truncate border shadow-sm" style={{backgroundColor: `${COLORS[l.type] || '#EBE6DD'}33`, color: TEXT_COLORS[l.type] || '#4A4238', borderColor: `${COLORS[l.type] || '#EBE6DD'}44`}}>{l.name}</div>)}
                     </div>
                   </div>
                 );
@@ -359,27 +358,26 @@
 
       return (
         <div className="bg-white rounded-3xl shadow-sm border border-[#EBE6DD] flex flex-col h-full overflow-hidden animate-in fade-in duration-500">
-          <div className="p-8 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
-            <h2 className="text-xl font-black text-[#4A4238]">จัดการพนักงาน</h2>
+          <div className="p-10 border-b border-[#EBE6DD] bg-[#FDFBF7] flex justify-between items-center">
+            <h2 className="text-2xl font-black text-[#4A4238]">จัดการพนักงาน</h2>
             <div className="relative">
-              <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#8C8476]"></i>
-              <input type="text" placeholder="ค้นหาพนักงาน..." className="pl-11 pr-6 py-2 rounded-full border border-[#EBE6DD] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#D3C8B4]/20 w-72" onChange={e => setSearchTerm(e.target.value)} />
+              <i className="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-[#8C8476] text-base"></i>
+              <input type="text" placeholder="ค้นหาชื่อพนักงาน..." className="pl-12 pr-6 py-3 rounded-full border border-[#EBE6DD] text-base font-bold focus:outline-none focus:ring-4 focus:ring-[#D3C8B4]/20 w-80 shadow-sm transition-all" onChange={e => setSearchTerm(e.target.value)} />
             </div>
           </div>
           <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left">
-              <thead className="bg-[#F5F2EA] text-[#8C8476] text-[10px] font-black uppercase tracking-widest">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-[#F5F2EA] text-[#8C8476] text-xs font-black uppercase tracking-widest">
                 <tr>
                   <th className="py-5 px-10">พนักงาน</th>
                   <th className="py-5 px-10 text-center">สัดส่วนการใช้สิทธิ (%)</th>
-                  <th className="py-5 px-10 text-center">วันลาพักร้อนคงเหลือ</th>
+                  <th className="py-5 px-10 text-center">พักร้อนคงเหลือ</th>
                   <th className="py-5 px-10 text-right">รายละเอียด</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EBE6DD] text-sm font-semibold">
+              <tbody className="divide-y divide-[#EBE6DD] text-base font-semibold">
                 {filteredEmployees.map(emp => {
                   const empBalances = balances.filter(b => b.userId === emp.id);
-                  // FIX: ค้นหาแบบ Case-insensitive และรองรับคำที่ประกอบกัน เช่น "Annual Leave"
                   const annual = empBalances.find(b => {
                     const type = (b.type || '').trim().toLowerCase();
                     return type.includes('annual');
@@ -390,17 +388,17 @@
 
                   return (
                     <tr key={emp.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="py-5 px-10 font-bold text-[#4A4238] text-base">{emp.name}</td>
-                      <td className="py-5 px-10">
-                        <div className="flex items-center space-x-4 justify-center min-w-[160px]">
-                          <span className="text-[11px] font-black text-[#8C8476] w-10 text-right">{usageRate}%</span>
-                          <div className="flex-1 bg-[#EBE6DD] h-2 rounded-full overflow-hidden max-w-[100px]">
+                      <td className="py-6 px-10 font-bold text-[#4A4238] text-lg">{emp.name}</td>
+                      <td className="py-6 px-10">
+                        <div className="flex items-center space-x-4 justify-center min-w-[180px]">
+                          <span className="text-sm font-black text-[#8C8476] w-10 text-right">{usageRate}%</span>
+                          <div className="flex-1 bg-[#EBE6DD] h-2.5 rounded-full overflow-hidden max-w-[120px] shadow-inner">
                             <div className="h-full rounded-full transition-all duration-700" style={{width: `${usageRate}%`, backgroundColor: usageRate > 80 ? '#F58D85' : usageRate > 40 ? '#F8C48B' : '#7EB1E0'}}></div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-5 px-10 text-center font-black text-2xl text-[#4A4238]">{annual ? annual.remaining : 0} <span className="text-[10px] text-[#8C8476]">วัน</span></td>
-                      <td className="py-5 px-10 text-right"><button onClick={() => setSelectedEmployee(emp)} className="px-6 py-2 bg-[#F5F2EA] text-[#4A4238] rounded-xl text-xs font-black hover:bg-[#EBE6DD] transition-all">ดูข้อมูล</button></td>
+                      <td className="py-6 px-10 text-center font-black text-2xl text-[#4A4238]">{annual ? annual.remaining : 0} <span className="text-xs text-[#8C8476]">วัน</span></td>
+                      <td className="py-6 px-10 text-right"><button onClick={() => setSelectedEmployee(emp)} className="px-6 py-2.5 bg-[#F5F2EA] text-[#4A4238] rounded-xl text-base font-black hover:bg-[#EBE6DD] transition-all shadow-sm">ดูข้อมูล</button></td>
                     </tr>
                   );
                 })}
@@ -410,14 +408,14 @@
 
           {selectedEmployee && (
             <div className="fixed inset-0 bg-[#4A4238]/60 backdrop-blur-md z-50 flex items-center justify-center p-6 animate-in fade-in duration-300" onClick={() => setSelectedEmployee(null)}>
-              <div className="bg-white rounded-[3rem] p-10 w-full max-w-2xl shadow-2xl border border-[#EBE6DD]" onClick={e => e.stopPropagation()}>
-                <div className="flex justify-between items-center mb-10"><h2 className="text-3xl font-black text-[#4A4238]">{selectedEmployee.name}</h2><button onClick={() => setSelectedEmployee(null)} className="w-10 h-10 bg-[#F5F2EA] rounded-full flex items-center justify-center text-[#4A4238] hover:rotate-90 transition-all text-xl"><i className="fa-solid fa-xmark"></i></button></div>
+              <div className="bg-white rounded-[3rem] p-12 w-full max-w-2xl shadow-2xl border border-[#EBE6DD]" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-10"><h2 className="text-3xl font-black text-[#4A4238]">{selectedEmployee.name}</h2><button onClick={() => setSelectedEmployee(null)} className="w-10 h-10 bg-[#F5F2EA] rounded-full flex items-center justify-center text-[#4A4238] hover:rotate-90 transition-all text-base shadow-sm"><i className="fa-solid fa-xmark"></i></button></div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {balances.filter(b => b.userId === selectedEmployee.id).map((b, i) => (
                     <div key={i} className="p-8 rounded-[2rem] border border-[#EBE6DD] bg-[#FDFBF7] shadow-sm">
-                      <p className="text-[10px] font-black text-[#8C8476] mb-2 uppercase tracking-widest">{b.type}</p>
+                      <p className="text-xs font-black text-[#8C8476] mb-2 uppercase tracking-widest">{b.type}</p>
                       <p className="text-4xl font-black text-[#4A4238]">{b.remaining} <span className="text-sm text-[#8C8476]">วัน</span></p>
-                      <div className="w-full bg-[#EBE6DD] h-1.5 rounded-full mt-5 overflow-hidden shadow-inner"><div className="h-full rounded-full transition-all duration-1000" style={{backgroundColor: COLORS[b.type] || '#8C8476', width: `${b.entitled > 0 ? (b.used/b.entitled)*100 : 0}%`}}></div></div>
+                      <div className="w-full bg-[#EBE6DD] h-2 rounded-full mt-5 overflow-hidden shadow-inner"><div className="h-full rounded-full transition-all duration-1000" style={{backgroundColor: COLORS[b.type] || '#8C8476', width: `${b.entitled > 0 ? (b.used/b.entitled)*100 : 0}%`}}></div></div>
                     </div>
                   ))}
                 </div>
@@ -441,15 +439,15 @@
       return (
         <div className="space-y-8 animate-in fade-in duration-500">
           <div className="bg-white rounded-[2.5rem] shadow-sm border border-[#EBE6DD] p-10">
-            <h3 className="text-lg font-black text-[#4A4238] mb-10 text-center sm:text-left">วิเคราะห์สัดส่วนการใช้สิทธิลา</h3>
+            <h3 className="text-xl font-black text-[#4A4238] mb-10 text-center sm:text-left">วิเคราะห์สัดส่วนการใช้สิทธิลา</h3>
             <div className="h-[450px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={usageStats} layout="vertical" margin={{ left: 50, right: 40 }}>
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#EBE6DD" />
                   <XAxis type="number" domain={[0, 100]} hide />
-                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12, fontWeight: 'bold', fill: '#4A4238' }} axisLine={false} tickLine={false} width={160} />
-                  <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '14px', fontWeight: 'bold', fontSize: '13px' }} />
-                  <Bar dataKey="usageRate" fill="#8C8476" radius={[0, 10, 10, 0]} barSize={22} label={{ position: 'right', fontSize: 11, fontWeight: 'black', fill: '#8C8476', offset: 12, formatter: (v) => `${v}%` }} />
+                  <YAxis dataKey="name" type="category" tick={{ fontSize: 13, fontWeight: 'bold', fill: '#4A4238' }} axisLine={false} tickLine={false} width={160} />
+                  <RechartsTooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '14px', fontWeight: 'bold', fontSize: '14px' }} />
+                  <Bar dataKey="usageRate" fill="#D3C8B4" radius={[0, 10, 10, 0]} barSize={22} label={{ position: 'right', fontSize: 11, fontWeight: 'black', fill: '#8C8476', offset: 12, formatter: (v) => `${v}%` }} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -507,12 +505,12 @@
         return { pending, avgDays, mostFrequent, usageRate };
       }, [requests, employees, balances]);
 
-      if (loading) return <div className="flex h-screen items-center justify-center bg-[#F5F2EA] text-2xl font-black text-[#8C8476] animate-pulse italic tracking-tighter">กำลังดึงข้อมูล...</div>;
+      if (loading) return <div className="flex h-screen items-center justify-center bg-[#F5F2EA] text-3xl font-black text-[#8C8476] animate-pulse italic tracking-tighter">กำลังดึงข้อมูล...</div>;
 
       return (
         <div className="flex h-screen bg-[#F5F2EA] font-sans selection:bg-[#D3E4CD] selection:text-[#3A4D39]">
-          <aside className="bg-[#FDFBF7] w-64 border-r border-[#EBE6DD] hidden md:flex flex-col shadow-sm z-20">
-            <div className="h-16 flex items-center px-10 border-b border-[#EBE6DD] bg-white"><div className="w-10 h-10 bg-[#A8E6CF] rounded-xl flex items-center justify-center mr-3 shadow-sm text-lg"><i className="fa-solid fa-leaf text-[#22543D]"></i></div><span className="text-2xl font-black text-[#4A4238] tracking-tight">LeaveApp</span></div>
+          <aside className="bg-[#FDFBF7] w-72 border-r border-[#EBE6DD] hidden md:flex flex-col shadow-sm z-20">
+            <div className="h-20 flex items-center px-10 border-b border-[#EBE6DD] bg-white"><div className="w-12 h-12 bg-[#A8E6CF] rounded-[1rem] flex items-center justify-center mr-4 shadow-sm text-xl"><i className="fa-solid fa-leaf text-[#22543D]"></i></div><span className="text-2xl font-black text-[#4A4238] tracking-tight">LeaveApp</span></div>
             <nav className="flex-1 p-6 space-y-3">
               <NavItem icon={<i className="fa-solid fa-chart-pie"></i>} label="ภาพรวม" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} />
               <NavItem icon={<i className="fa-solid fa-clock-rotate-left"></i>} label="รออนุมัติ" active={activeTab === 'pending'} onClick={() => setActiveTab('pending')} badge={stats.pending} />
@@ -522,16 +520,16 @@
             </nav>
           </aside>
           <div className="flex-1 flex flex-col overflow-hidden relative">
-            <header className="h-16 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center px-10 shadow-sm z-10">
+            <header className="h-20 bg-[#FDFBF7] border-b border-[#EBE6DD] flex items-center px-12 shadow-sm z-10">
               <h1 className="text-2xl font-black text-[#4A4238] tracking-tighter capitalize">
                 {activeTab === 'overview' ? 'ภาพรวมระบบ' : 
                  activeTab === 'pending' ? 'รายการรออนุมัติ' : 
                  activeTab === 'calendar' ? 'ปฏิทินการลา' : 
                  activeTab === 'employees' ? 'จัดการข้อมูลพนักงาน' : 
-                 'รายงานสรุปผล'}
+                 'รายงานวิเคราะห์'}
               </h1>
             </header>
-            <main className="flex-1 overflow-auto p-10 bg-[#F5F2EA] no-scrollbar">
+            <main className="flex-1 overflow-auto p-12 bg-[#F5F2EA] no-scrollbar">
               {activeTab === 'overview' && <OverviewTab stats={stats} employees={employees} requests={requests} holidays={holidays} onNavigate={setActiveTab} />}
               {activeTab === 'pending' && <PendingTab requests={requests} />}
               {activeTab === 'calendar' && <CalendarTab holidays={holidays} requests={requests} />}
